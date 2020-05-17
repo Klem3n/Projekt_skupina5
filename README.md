@@ -1,4 +1,4 @@
-# skupina 5 - projektna infrastruktura
+# skupina 5 - prometna infrastruktura
 
 Repozitorij vsebuje branche in kodo za specifičen predmet.
 
