@@ -8,4 +8,5 @@ Server Side
 
 Client Side
 1. cd client
-2. npm run serve
+2. npm install
+3. npm run serve
