@@ -1,14 +1,14 @@
 package com.promet.app.opencv;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.promet.R;
 import com.promet.app.activity.RoadCamera;
 
-import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -24,19 +24,13 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class SignDetection {
     MatOfByte mem = new MatOfByte();
@@ -217,5 +211,48 @@ public class SignDetection {
         public String[] names;
 
         public boolean success = false;
+    }
+    public static class Detector {
+        private static final Logger logger = Logger.getLogger(Detector.class.getName());
+        Integer minSize1;
+        Integer maxSize1;
+        Integer minSize2, maxSize2;
+        SharedPreferences sp;
+        private Activity activity;
+        private CascadeClassifier cascadeClassifier1;
+        private CascadeClassifier cascadeClassifier2;
+
+        public Detector(Activity activity) {
+            this.activity = activity;
+            sp = PreferenceManager.getDefaultSharedPreferences(activity);
+            minSize1 = Integer.parseInt(sp.getString("minSize1", "30"));
+            maxSize1 = Integer.parseInt(sp.getString("maxSize1", "70"));
+            minSize2 = Integer.parseInt(sp.getString("minSize2", "30"));
+            maxSize2 = Integer.parseInt(sp.getString("maxSize2", "70"));
+
+        }
+
+        public void Detect(Mat mGray, MatOfRect signs, int type) {
+            //loadCascadeFile(type, cascadeClassifier);
+//		loadCascadeFile(type);
+            switch (type) {
+                case 1:
+                    if (cascadeClassifier1 != null && !cascadeClassifier1.empty()) {
+                        cascadeClassifier1.detectMultiScale(mGray, signs, 1.1, 3, 0
+                                , new Size(minSize1, minSize1), new Size(maxSize1, maxSize1));
+                    } else {
+                        Log.e("s", "cascade");
+                    }
+                    break;
+                case 2:
+                default:
+                    if (cascadeClassifier2 != null && !cascadeClassifier2.empty()) {
+                        cascadeClassifier2.detectMultiScale(mGray, signs, 1.1, 5, 0
+                                , new Size(minSize2, minSize2), new Size(maxSize2, maxSize2));
+                    } else {
+                        Log.e("s", "cascade");
+                    }
+            }
+        }
     }
 }
