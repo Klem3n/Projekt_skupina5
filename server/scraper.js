@@ -4,10 +4,12 @@ const axios = require("axios");
 const siteUrl = "https://www.promet.si/portal/sl/stevci-prometa.aspx";
 
 let siteName = "";
-const categories = new Set();
-const tags = new Set();
 const locations = new Set();
-const positions = new Set();
+const roads = new Set();
+const directions = new Set();
+const num_vehicles = new Set();
+const speed = new Set();
+const conditions = new Set();
 
 const fetchData = async () => {
   const result = await axios.get(siteUrl);
@@ -17,25 +19,33 @@ const fetchData = async () => {
 const getResults = async () => {
   const $ = await fetchData();
 
-  siteName = $('.top > .action-post-job').text();
+  siteName = $('.top > .headertitle').text();
 
-  $(".tags .tag").each((index, element) => {
-    tags.add($(element).text());
-  });
-  $(".location").each((index, element) => {
+  $("table td:nth-child(2)").each((index, element) => {
     locations.add($(element).text());
   });
-  $("div.nav p").each((index, element) => {
-    categories.add($(element).text());
+  $("table td:nth-child(3)").each((index, element) => {
+    roads.add($(element).text());
   });
-  $('.company_and_position [itemprop="title"]').each((index, element) => {
-    positions.add($(element).text());
+  $("table td:nth-child(4)").each((index, element) => {
+    directions.add($(element).text());
+  });
+  $("table td:nth-child(6)").each((index, element) => {
+    num_vehicles.add($(element).text());
+  });
+  $("table td:nth-child(7)").each((index, element) => {
+    speed.add($(element).text());
+  });
+  $('table td:nth-child(9)').each((index, element) => {
+    conditions.add($(element).text());
   });
   return {
-    positions: [...positions].sort(),
-    tags: [...tags].sort(),
+    conditions: [...conditions].sort(),
+    speed: [...speed].sort(),
+    num_vehicles: [...num_vehicles].sort(),
+    directions: [...directions].sort(),
+    roads: [...roads].sort(),
     locations: [...locations].sort(),
-    categories: [...categories].sort(),
     siteName,
   };
 };
