@@ -38,6 +38,7 @@ const getResults = async () => {
   });
   $('table td:nth-child(9)').each((index, element) => {
     conditions.add($(element).text());
+    console.log($(element).text());
   });
   return {
     conditions: [...conditions].sort(),

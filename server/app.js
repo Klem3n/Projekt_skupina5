@@ -16,7 +16,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var TrafficMetersRouter = require('./routes/TrafficMetersRoutes');
 var app = express();
-/*
+
 var cors = require('cors');
 var allowedOrigins = ['http://localhost:4200','http://localhost:3000',
                       'http://yourapp.com'];
@@ -34,7 +34,7 @@ app.use(cors({
     return callback(null, true);
   }
 }));
-*/
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
