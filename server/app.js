@@ -6,7 +6,7 @@ var logger = require('morgan');
 
 var mongoose = require('mongoose');
 var mongoDB = 'mongodb://127.0.0.1:27017/traffic_db';
-mongoose.connect(mongoDB);
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 
@@ -43,6 +43,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -63,5 +64,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+const port = 9000
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 module.exports = app;

@@ -19,24 +19,24 @@ const fetchData = async () => {
 const getResults = async () => {
   const $ = await fetchData();
 
-  siteName = $('.top > .headertitle').text();
+  siteName = $('.moduletitle RMapControl').text();
 
-  $("table td:nth-child(2)").each((index, element) => {
+  $(".PrometPanelItem td:nth-child(2)").each((index, element) => {
     locations.add($(element).text());
   });
-  $("table td:nth-child(3)").each((index, element) => {
+  $(".PrometPanelItem td:nth-child(3)").each((index, element) => {
     roads.add($(element).text());
   });
-  $("table td:nth-child(4)").each((index, element) => {
+  $(".PrometPanelItem td:nth-child(4)").each((index, element) => {
     directions.add($(element).text());
   });
-  $("table td:nth-child(6)").each((index, element) => {
+  $(".PrometPanelItem td:nth-child(6)").each((index, element) => {
     num_vehicles.add($(element).text());
   });
-  $("table td:nth-child(7)").each((index, element) => {
+  $(".PrometPanelItem td:nth-child(7)").each((index, element) => {
     speed.add($(element).text());
   });
-  $('table td:nth-child(9)').each((index, element) => {
+  $('.PrometPanelItem td:nth-child(9)').each((index, element) => {
     conditions.add($(element).text());
     console.log($(element).text());
   });
