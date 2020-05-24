@@ -6,7 +6,8 @@ var TrafficMetersController = require('../controllers/TrafficMetersController.js
  * GET
  */
 router.get('/', TrafficMetersController.list);
-
+router.get('/images', TrafficMetersController.showImages);
+router.get('/data', TrafficMetersController.showData);
 /*
  * GET
  */

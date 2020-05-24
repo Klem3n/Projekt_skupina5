@@ -68,6 +68,15 @@ module.exports = {
         });
     },
 
+    showImages: function (req, res) {
+        res.render('user/images');
+    }
+    ,
+    showData: function (req, res) {
+        res.render('user/data');
+    }
+    ,
+
     /**
      * TrafficMetersController.update()
      */
