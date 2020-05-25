@@ -6,7 +6,7 @@ const PovpHitrost = require('./povp_hitrost')
 
 const router = express.Router()
 
-router.get('/api/v1/stanje', async (req, res) => {
+router.get('/api/v1/all', async (req, res) => {
     res.send(await Scraper.runScraper());
 })
 
