@@ -4,7 +4,7 @@
     <section class="hero is-link is-fullheight-with-navbar">
       <div class="hero-body">
         <div class="container grid">
-          <canvas id="test-chart"></canvas>
+          <line-chart></line-chart>
         </div>
       </div>
     </section>
@@ -15,13 +15,19 @@
 <script>
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-// import Chart from 'chart.js';
+import LineChart from "@/components/LineChart";
 
 export default {
   name: "Home",
   components: {
     Navbar,
-    Footer
+    Footer,
+    LineChart
+  },
+  data: function() {},
+  methods: {},
+  mounted() {
+    console.log("Mounted");
   }
 };
 </script>
@@ -31,5 +37,8 @@ export default {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
+}
+.hero {
+  background-color: white;
 }
 </style>
