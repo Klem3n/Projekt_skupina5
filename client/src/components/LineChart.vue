@@ -2,31 +2,24 @@
 import { Line } from "vue-chartjs";
 export default {
   extends: Line,
+  props: {
+    labels: [String],
+    data: [Number]
+  },
   data() {
     return {
       datacollection: {
-        labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December"
-        ],
+        labels: this.props.labels,
         datasets: [
           {
             label: "Data One",
             backgroundColor: "#f87979",
             pointBackgroundColor: "white",
-            borderWidth: 1,
+            borderColor: "#f87979",
+            borderWidth: 3,
             pointBorderColor: "#249EBF",
-            data: [60, 40, 20, 50, 90, 10, 20, 40, 50, 70, 90, 100]
+            data: this.props.data,
+            fill: false
           }
         ]
       },
@@ -38,7 +31,7 @@ export default {
                 beginAtZero: true
               },
               gridLines: {
-                display: true
+                display: false
               }
             }
           ],
@@ -51,10 +44,11 @@ export default {
           ]
         },
         legend: {
-          display: true
+          display: false
         },
         responsive: true,
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        fill: false
       }
     };
   },

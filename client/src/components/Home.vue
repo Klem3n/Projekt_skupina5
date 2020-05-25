@@ -4,7 +4,7 @@
     <section class="hero is-link is-fullheight-with-navbar">
       <div class="hero-body">
         <div class="container grid">
-          <line-chart></line-chart>
+          <line-chart :labels="[nekaj, nekaj, nekaj]"></line-chart>
         </div>
       </div>
     </section>
