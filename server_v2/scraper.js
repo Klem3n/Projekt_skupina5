@@ -1,26 +1,42 @@
 const cheerio = require('cheerio')
 const Nightmare = require('nightmare')
 
-const nightmare = Nightmare({ show: true })
+const nightmare = Nightmare({ show: false })
 const url = "https://www.promet.si/portal/sl/stevci-prometa.aspx"
+
+var loaded = false;
 
 module.exports = {
 
     runScraper: async () => {
         var data = [];
 
-        await nightmare
-            .goto(url)
-            .wait('body')
-            .evaluate(() => document.querySelector('body').innerHTML)
-            .end()
-            .then(response => {
-                data = parseData(response)
-            }).catch(err => {
-                console.log(err);
-                data = null;
-                return err;
-            });
+        if(!loaded){
+            await nightmare
+                .goto(url)
+                .wait('body')
+                .evaluate(() => document.querySelector('body').innerHTML)
+                .then(response => {
+                    data = parseData(response)
+                    loaded = true;
+                }).catch(err => {
+                    console.log(err);
+                    data = null;
+                    nightmare.refresh();
+                    return err;
+                });
+        } else {
+            await nightmare
+                .evaluate(() => document.querySelector('body').innerHTML)
+                .then(response => {
+                    data = parseData(response)
+                }).catch(err => {
+                    console.log(err);
+                    data = null;
+                    nightmare.refresh();
+                    return err;
+                });
+        }
         
         return data;
     },
