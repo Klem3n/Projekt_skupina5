@@ -8,17 +8,20 @@
         </div>
       </div>
     </section>
+    <Footer />
   </div>
 </template>
 
 <script>
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 // import Chart from 'chart.js';
 
 export default {
   name: "Home",
   components: {
-    Navbar
+    Navbar,
+    Footer
   }
 };
 </script>
