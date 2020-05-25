@@ -18,6 +18,8 @@ module.exports = {
                 data = parseData(response)
             }).catch(err => {
                 console.log(err);
+                data = null;
+                return err;
             });
         
         return data;

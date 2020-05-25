@@ -1,10 +1,6 @@
-const Scraper = require('./scraper')
-
 module.exports = {
 
-    run: async (req) => {
-        var data = await Scraper.runScraper()
-        
+    run: (req, data) => {
         var density = req.params.density;
 
         var roadName = req.params.road;
