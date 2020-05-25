@@ -1,6 +1,7 @@
 const express = require('express')
 
 const Scraper = require('./scraper')
+const CameraScraper = require('./scraper_camera')
 
 const PovpHitrost = require('./povp_hitrost')
 const GostotaPrometa = require('./gostota_prometa')
@@ -71,6 +72,14 @@ router.get('/api/v1/gostota/:density/:road', async (req, res) => {
     } catch(err){
         res.send(JSON.stringify("Error: " + err));
     }
+})
+
+router.get('/api/v1/kamere', async (req, res) => {
+    res.send(JSON.stringify(await CameraScraper.getCameras()))
+})
+
+router.get('/api/v1/kamere/:password', async (req, res) => {
+    res.send(JSON.stringify(await CameraScraper.scrapeToFile(req, res)))
 })
 
 initScraper();
