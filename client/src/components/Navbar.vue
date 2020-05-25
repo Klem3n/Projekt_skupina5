@@ -1,6 +1,9 @@
 <template>
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
+      <a class="navbar-item" href="https://bulma.io">
+        <h1 class="title is-5">Prometna infrastruktura</h1>
+      </a>
       <a
         role="button"
         class="navbar-burger burger"
@@ -13,27 +16,18 @@
         <span aria-hidden="true"></span>
       </a>
     </div>
-
+    <!--
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start">
-        <a class="navbar-item">🏠 Domov</a>
+       
+      </div>
+    -->
+    <div class="navbar-end">
+      <a class="navbar-item">🏠 Domov</a>
 
-        <a class="navbar-item">⚡ API</a>
-        
-        <a class="navbar-item">💡 O projektu</a>
-      </div>
-      <!--
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons">
-            <a class="button is-primary">
-              <strong>Sign up</strong>
-            </a>
-            <a class="button is-light">Log in</a>
-          </div>
-        </div>
-      </div>
-      -->
+      <a class="navbar-item">⚡ API</a>
+
+      <a class="navbar-item">💡 O projektu</a>
     </div>
   </nav>
 </template>
