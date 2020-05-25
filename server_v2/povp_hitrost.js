@@ -12,7 +12,7 @@ module.exports = {
         var total = 0;
 
         data.forEach((road) => {
-            if(road.cesta == roadName){
+            if(road.cesta.toUpperCase() == roadName.toUpperCase()){
                 count++;
                 total += parseInt(road.hitrost);
             }
