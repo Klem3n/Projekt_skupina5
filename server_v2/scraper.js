@@ -1,7 +1,7 @@
 const cheerio = require('cheerio')
 const Nightmare = require('nightmare')
 
-const nightmare = Nightmare({ show: false })
+const nightmare = Nightmare({ show: true })
 const url = "https://www.promet.si/portal/sl/stevci-prometa.aspx"
 
 module.exports = {

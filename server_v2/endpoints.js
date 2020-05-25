@@ -43,6 +43,16 @@ router.get('/api/v1/povprecna_hitrost/:road', async (req, res) => {
     }
 })
 
+router.get('/api/v1/gostota', async (req, res) => {
+    await scrapeData();
+
+    try{
+        res.send(JSON.stringify(GostotaPrometa.run(req, data)));
+    } catch(err){
+        res.send(JSON.stringify("Error: " + err));
+    }
+})
+
 router.get('/api/v1/gostota/:density', async (req, res) => {
     await scrapeData();
 
