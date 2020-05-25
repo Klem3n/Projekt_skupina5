@@ -5,10 +5,7 @@ const Scraper = require('./scraper')
 const router = express.Router()
 
 router.get('/api/v1/stanje', async (req, res) => {
-
-    await Scraper.runScraper()
-
-    res.send("testni endpoint")
+    res.send(await Scraper.runScraper());
 })
 
 module.exports = router
