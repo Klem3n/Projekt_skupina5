@@ -1,29 +1,31 @@
 <script>
-import { Line } from "vue-chartjs";
-
+//Importing Bar class from the vue-chartjs wrapper
+import { Bar } from "vue-chartjs";
+//Exporting this so it can be used in other components
 export default {
-  extends: Line,
+  extends: Bar,
   props: {
     napisi: Array,
     vrednosti: Array
   },
-  data: function() {
+  data() {
     return {
       datacollection: {
+        //Data to be represented on x-axis
         labels: this.napisi,
         datasets: [
           {
             label: "Data One",
             backgroundColor: "#f87979",
             pointBackgroundColor: "white",
-            borderColor: "#f87979",
-            borderWidth: 3,
+            borderWidth: 1,
             pointBorderColor: "#249EBF",
-            data: [10, 20, 74, 22, 1, 15],
-            fill: false
+            //Data to be represented on y-axis
+            data: this.vrednosti
           }
         ]
       },
+      //Chart.js options that controls the appearance of the chart
       options: {
         scales: {
           yAxes: [
@@ -32,7 +34,7 @@ export default {
                 beginAtZero: true
               },
               gridLines: {
-                display: false
+                display: true
               }
             }
           ],
@@ -50,15 +52,15 @@ export default {
         title: {
           display: true,
           position: "top",
-          text: "Naslov grafa"
+          text: "Trenutna gostota prometa"
         },
         responsive: true,
-        maintainAspectRatio: false,
-        fill: false
+        maintainAspectRatio: false
       }
     };
   },
   mounted() {
+    //renderChart function renders the chart with the datacollection and options object.
     this.renderChart(this.datacollection, this.options);
   }
 };
