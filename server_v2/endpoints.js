@@ -12,9 +12,9 @@ router.get('/api/v1/all', async (req, res) => {
 
 router.get('/api/v1/povprecna_hitrost/:road', async (req, res) => {
     try{
-        res.send(await PovpHitrost.run(req));
+        res.send(JSON.stringify(await PovpHitrost.run(req)));
     } catch(err){
-        res.send("Error: " + err);
+        res.send(JSON.stringify("Error: " + err));
     }
 })
 
