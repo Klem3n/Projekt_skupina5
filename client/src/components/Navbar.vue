@@ -16,11 +16,11 @@
 
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start">
-        <a class="navbar-item">Domov</a>
+        <a class="navbar-item">🏠 Domov</a>
 
-        <a class="navbar-item">API</a>
-
-        <a class="navbar-item">O projektu</a>
+        <a class="navbar-item">⚡ API</a>
+        
+        <a class="navbar-item">💡 O projektu</a>
       </div>
       <!--
       <div class="navbar-end">
