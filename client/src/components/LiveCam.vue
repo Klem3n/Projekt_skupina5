@@ -3,7 +3,7 @@
     <Navbar />
     <section class="hero is-link is-fullheight-with-navbar">
       <div class="hero-body">
-        <div class="container imagesContainer">
+        <div v-if="isDone" class="container imagesContainer">
           <div v-for="item in imagesArray" :key="item.url">
             <img :src="item" style="padding: 10px;" />
           </div>
@@ -28,7 +28,8 @@ export default {
   data: function() {
     return {
       locationArray: [],
-      imagesArray: []
+      imagesArray: [],
+      isDone: false
     };
   },
   methods: {},
@@ -39,6 +40,7 @@ export default {
         this.locationArray[i] = response.data[i].name;
         this.imagesArray[i] = response.data[i].url;
       }
+      this.isDone = true;
     });
   },
   mounted() {
