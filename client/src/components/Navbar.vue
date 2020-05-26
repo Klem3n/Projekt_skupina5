@@ -31,7 +31,7 @@
         target="_blank"
       >⚡ API</a>
 
-      <a class="navbar-item">📸 Vozišča v živo</a>
+      <router-link to="/livecam" class="navbar-item">📸 Vozišča v živo</router-link>
 
       <a class="navbar-item">💡 O projektu</a>
     </div>
