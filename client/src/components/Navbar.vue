@@ -23,7 +23,7 @@
       </div>
     -->
     <div class="navbar-end">
-      <a class="navbar-item">🏠 Domov</a>
+      <router-link to="/" class="navbar-item">🏠 Domov</router-link>
 
       <a
         class="navbar-item"
