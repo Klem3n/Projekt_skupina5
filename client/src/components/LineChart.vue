@@ -18,13 +18,19 @@ export default {
             pointBackgroundColor: "white",
             borderColor: "#f87979",
             borderWidth: 3,
-            pointBorderColor: "#249EBF",
-            data: [10, 20, 74, 22, 1, 15],
+            pointBorderColor: "#f87979",
+
+            data: this.vrednosti,
             fill: false
           }
         ]
       },
       options: {
+        elements: {
+          point: {
+            radius: 0
+          }
+        },
         scales: {
           yAxes: [
             {
@@ -50,7 +56,7 @@ export default {
         title: {
           display: true,
           position: "top",
-          text: "Naslov grafa"
+          text: "Trenutna porazdelitev hitrosti (km/h)"
         },
         responsive: true,
         maintainAspectRatio: false,

@@ -4,7 +4,17 @@
     <section class="hero is-link is-fullheight-with-navbar">
       <div class="hero-body">
         <div class="container grid">
-          <line-chart :napisi="labele"></line-chart>
+          <div v-if="isAvgDone === false">
+            <lottie-player
+              src="https://assets3.lottiefiles.com/packages/lf20_03MqnD.json"
+              background="transparent"
+              speed="1"
+              style="width: 50vw; height: 50vh;"
+              loop
+              autoplay
+            ></lottie-player>
+          </div>
+          <line-chart v-else :napisi="oznakeCest" :vrednosti="povprecneHitrosti"></line-chart>
           <div v-if="isGostotaFetching === true">
             <lottie-player
               src="https://assets3.lottiefiles.com/packages/lf20_03MqnD.json"
@@ -48,9 +58,9 @@
 </template>
 
 <script>
+import axios from "axios";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import axios from "axios";
 import LineChart from "@/components/LineChart";
 import BarChart from "@/components/BarChart";
 

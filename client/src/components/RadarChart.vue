@@ -1,7 +1,6 @@
 <script>
-//Importing Bar class from the vue-chartjs wrapper
 import { Radar } from "vue-chartjs";
-//Exporting this so it can be used in other components
+
 export default {
   extends: Radar,
   props: {
@@ -13,56 +12,34 @@ export default {
   data() {
     return {
       datacollection: {
-        //Data to be represented on x-axis
         labels: this.napisi,
         datasets: [
           {
-            label: "Data One",
-            backgroundColor: this.barva,
-            pointBackgroundColor: "white",
-            borderWidth: 1,
-            pointBorderColor: "#249EBF",
-            //Data to be represented on y-axis
+            label: this.title,
+            backgroundColor: "rgba(179,181,198,0.2)",
+            borderColor: "rgba(179,181,198,1)",
+            pointBackgroundColor: "rgba(179,181,198,1)",
+            pointBorderColor: "#fff",
+            pointHoverBackgroundColor: "#fff",
+            pointHoverBorderColor: "rgba(179,181,198,1)",
             data: this.vrednosti
           }
         ]
       },
-      //Chart.js options that controls the appearance of the chart
       options: {
-        scales: {
-          yAxes: [
-            {
-              ticks: {
-                beginAtZero: true
-              },
-              gridLines: {
-                display: true
-              }
-            }
-          ],
-          xAxes: [
-            {
-              gridLines: {
-                display: false
-              }
-            }
-          ]
-        },
-        legend: {
-          display: false
-        },
-        title: {
-          display: true,
-          position: "top",
-          text: this.title
-        },
-        responsive: true,
-        maintainAspectRatio: false
+        scale: {
+          angleLines: {
+            display: false
+          },
+          ticks: {
+            suggestedMin: 50,
+            suggestedMax: 100
+          }
+        }
       }
     };
   },
   mounted() {
-    //renderChart function renders the chart with the datacollection and options object.
     this.renderChart(this.datacollection, this.options);
   }
 };
