@@ -25,7 +25,13 @@
     <div class="navbar-end">
       <a class="navbar-item">🏠 Domov</a>
 
-      <a class="navbar-item">⚡ API</a>
+      <a
+        class="navbar-item"
+        href="https://documenter.getpostman.com/view/11521904/SztA7UZC?version=latest"
+        target="_blank"
+      >⚡ API</a>
+
+      <a class="navbar-item">📸 Vozišča v živo</a>
 
       <a class="navbar-item">💡 O projektu</a>
     </div>

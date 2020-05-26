@@ -15,7 +15,31 @@
               autoplay
             ></lottie-player>
           </div>
-          <bar-chart v-else :napisi="gostotaNapisi" :vrednosti="gostotaVrednosti"></bar-chart>
+          <bar-chart
+            v-else
+            :napisi="gostotaNapisi"
+            :vrednosti="gostotaVrednosti"
+            title="Trenutna gostota prometa"
+            barva="#f87979"
+          ></bar-chart>
+          <!-- povprecna hitrost -->
+          <div v-if="isAvgDone === false">
+            <lottie-player
+              src="https://assets3.lottiefiles.com/packages/lf20_03MqnD.json"
+              background="transparent"
+              speed="1"
+              style="width: 50vw; height: 50vh;"
+              loop
+              autoplay
+            ></lottie-player>
+          </div>
+          <bar-chart
+            v-else
+            :napisi="oznakeCest"
+            :vrednosti="povprecneHitrosti"
+            title="Trenutna povprečna hitrost na slovenskih cestah (km/h)"
+            barva="#2fc4b2"
+          ></bar-chart>
         </div>
       </div>
     </section>
@@ -49,19 +73,35 @@ export default {
         "Ni prometa"
       ),
       gostotaVrednosti: new Array(),
-      isGostotaFetching: true
+      isGostotaFetching: true,
+      oznakeCest: new Array(),
+      povprecneHitrosti: new Array(),
+      isAvgDone: false
     };
   },
   methods: {},
   beforeMount() {
     // Gostota Prometa
     axios.get("http://localhost:5000/api/v1/gostota").then(response => {
-      console.log(response);
+      //console.log(response);
       for (var i = 0; i < 4; i++) {
         this.gostotaVrednosti[i] = response.data[i].val;
         this.isGostotaFetching = false;
       }
     });
+    // Povprečna hitrost
+    axios
+      .get("http://localhost:5000/api/v1/povprecna_hitrost")
+      .then(response => {
+        var x = response;
+        for (var i = 0; i < 98; i++) {
+          if (x.data[i].avg != undefined && x.data[i].roadName != undefined) {
+            this.povprecneHitrosti[i] = x.data[i].avg;
+            this.oznakeCest[i] = x.data[i].roadName;
+          }
+        }
+        this.isAvgDone = true;
+      });
   },
   mounted() {
     console.log("Mounted");
