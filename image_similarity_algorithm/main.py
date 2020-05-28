@@ -28,7 +28,7 @@ class CompareImage(object):
         img_template_probability_match = cv2.matchTemplate(first_image_histogram, second_image_histogram, cv2.TM_CCOEFF_NORMED)[0][0]
         img_template_diff = 1 - img_template_probability_match
         
-        commutative_image_diff = (img_template_diff / 10) + img_template_diff
+        commutative_image_diff = (img_hist_diff / 10) + img_template_diff
         return commutative_image_diff
 
 
