@@ -12,6 +12,8 @@ import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
+import org.opencv.core.MatOfFloat;
+import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
@@ -29,6 +31,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,13 +69,14 @@ public class SignDetection {
     }
 
     public void run(Mat cameraFrame){
+        Mat clone = cameraFrame.clone();
         faceDetector
                 .detectMultiScale(cameraFrame, signDetections, 1.1, 1, 0, new Size(20, 20), new Size());
 
-        detectedSigns(cameraFrame, signDetections.toArray());
+        detectedSigns(clone, cameraFrame, signDetections.toArray());
     }
 
-    public void detectedSigns(Mat imageMatrix, Rect[] rects){
+    public void detectedSigns(Mat clone, Mat imageMatrix, Rect[] rects){
         for (Rect rect : rects) {
             Mat cropped = new Mat(imageMatrix, rect);
 
@@ -84,40 +88,83 @@ public class SignDetection {
                 e.printStackTrace();
             }
 
-            Imgproc.rectangle(imageMatrix, rect.tl(), rect.br(), new Scalar(255, 0, 0));
+            Imgproc.rectangle(clone, rect.tl(), rect.br(), new Scalar(255, 0, 0));
 
             if(signName != null){
                 int y = Math.max(0, rect.y-14);
 
                 //Imgproc.rectangle(imageMatrix, new Point(rect.x, y), new Point(rect.x + rect.width, y + 14), new Scalar(255, 0, 0), 1, -1);
 
-                Imgproc.putText(imageMatrix, signName, new Point(rect.x, y+10), 5, 2, new Scalar(255, 255, 255));
+                Imgproc.putText(clone, signName, new Point(rect.x, y+10), 5, 2, new Scalar(255, 255, 255));
             }
         }
     }
 
     private String getSign(Mat sign){
+        Mat diff = new Mat();
+
         double maxMatch = 0.0;
         String maxMatchName = null;
 
         Imgproc.resize(sign, sign, new Size(SIGN_IMAGE_SIZE, SIGN_IMAGE_SIZE));
-        Imgproc.cvtColor(sign, sign, Imgproc.COLOR_BGR2RGB);
+
         Mat score = new Mat();
 
+        //Imgproc.cvtColor(sign, sign, Imgproc.COLOR_BGR2GRAY);
+
         for(Map.Entry<String, Mat> entry : signImages.entrySet()){
-            Imgproc.matchTemplate(sign, entry.getValue(), score, Imgproc.TM_CCOEFF);
+            double match = compareHist(sign, entry.getValue());
 
-            Core.MinMaxLocResult result = Core.minMaxLoc(score);
+            System.out.println(entry.getKey() + " - match: " + match);
+            /*try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }*/
 
-            double match = result.maxVal;
-
-            if(match > 0.1 && match > maxMatch){
+            if(match > maxMatch){
                 maxMatch = match;
                 maxMatchName = entry.getKey();
             }
         }
 
         return maxMatchName;
+    }
+
+    private double compareHist(Mat sign, Mat value) {
+        Mat hist_1 = new Mat();
+        Mat hist_2 = new Mat();
+
+        MatOfFloat ranges = new MatOfFloat(0f, 256f);
+        MatOfInt histSize = new MatOfInt(256);
+
+        Imgproc.calcHist(Collections.singletonList(sign), new MatOfInt(0),
+                new Mat(), hist_1, histSize, ranges);
+        Imgproc.calcHist(Collections.singletonList(value), new MatOfInt(0),
+                new Mat(), hist_2, histSize, ranges);
+
+        double histDiff = 1-Imgproc.compareHist(hist_1, hist_2, Imgproc.CV_COMP_CORREL);
+
+        Mat template = new Mat();
+
+        Mat graySign = new Mat();
+        Mat grayValue = new Mat();
+
+        Imgproc.cvtColor(sign, graySign, Imgproc.COLOR_RGB2GRAY);
+        Imgproc.cvtColor(value, grayValue, Imgproc.COLOR_RGB2GRAY);
+
+        Imgproc.matchTemplate(graySign, grayValue, template, Imgproc.TM_CCOEFF_NORMED);
+
+        double templateDiff = Core.minMaxLoc(template).maxVal;
+
+        if(templateDiff < 1){
+            templateDiff /= 2;
+        }
+
+        System.out.println("Hist diff: " + histDiff);
+        System.out.println("Template diff: " + templateDiff);
+
+        return Math.abs(histDiff/templateDiff);
     }
 
     private void loadSignImage(RoadCamera camera, String img) {

@@ -198,6 +198,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUIValue(Location location) {
+        if(location == null)
+            return;
+
         tv_latiency.setText(String.valueOf(location.getLatitude()));
         tv_longitude.setText(String.valueOf(location.getLongitude()));
         tv_accurancy.setText(String.valueOf(location.getAccuracy()));
