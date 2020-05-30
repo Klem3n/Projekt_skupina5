@@ -69,13 +69,14 @@ public class SignDetection {
     }
 
     public void run(Mat cameraFrame){
+        Mat clone = cameraFrame.clone();
         faceDetector
                 .detectMultiScale(cameraFrame, signDetections, 1.1, 1, 0, new Size(20, 20), new Size());
 
-        detectedSigns(cameraFrame, signDetections.toArray());
+        detectedSigns(clone, cameraFrame, signDetections.toArray());
     }
 
-    public void detectedSigns(Mat imageMatrix, Rect[] rects){
+    public void detectedSigns(Mat clone, Mat imageMatrix, Rect[] rects){
         for (Rect rect : rects) {
             Mat cropped = new Mat(imageMatrix, rect);
 
@@ -87,14 +88,14 @@ public class SignDetection {
                 e.printStackTrace();
             }
 
-            Imgproc.rectangle(imageMatrix, rect.tl(), rect.br(), new Scalar(255, 0, 0));
+            Imgproc.rectangle(clone, rect.tl(), rect.br(), new Scalar(255, 0, 0));
 
             if(signName != null){
                 int y = Math.max(0, rect.y-14);
 
                 //Imgproc.rectangle(imageMatrix, new Point(rect.x, y), new Point(rect.x + rect.width, y + 14), new Scalar(255, 0, 0), 1, -1);
 
-                Imgproc.putText(imageMatrix, signName, new Point(rect.x, y+10), 5, 2, new Scalar(255, 255, 255));
+                Imgproc.putText(clone, signName, new Point(rect.x, y+10), 5, 2, new Scalar(255, 255, 255));
             }
         }
     }
