@@ -7,6 +7,10 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -32,20 +36,22 @@ import org.opencv.android.OpenCVLoader;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
     //GPS
     public static final int INTERVAL_DEFAULT_TIMER = 10;
     public static final int INTERVAL_FAST_TIMER = 5;
     public static final int PRIORITY_LOCATION_ACCURACY = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY;
     private static final int PERMISSIONS_FINE_LOCATION = 23;
-    TextView tv_latiency;
-    TextView tv_longitude;
-    TextView tv_altitude;
-    TextView tv_accurancy;
-    TextView tv_speed;
-    TextView tv_sensor;
-    TextView tv_adress;
-    TextView tv_updates;
+    public static final float GRAVITY_EARTH = SensorManager.GRAVITY_EARTH;
+
+    private TextView tv_latiency;
+    private TextView tv_longitude;
+    private TextView tv_altitude;
+    private TextView tv_accurancy;
+    private TextView tv_speed;
+    private TextView tv_sensor;
+    private TextView tv_adress;
+    private TextView tv_updates;
 
     Switch sw_onlocationchange;
     Switch sw_ongpschange;
@@ -57,6 +63,12 @@ public class MainActivity extends AppCompatActivity {
 
     Geocoder geocoder;
 
+    //Accelerometer
+    private TextView tv_X;
+    private TextView tv_Y;
+    private TextView tv_Z;
+    private Sensor sensor;
+    private SensorManager sensorManager;
 
     //OPENCV
     static {
@@ -72,14 +84,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //GPS
-        tv_latiency= findViewById(R.id.tv_lat);
-        tv_longitude= findViewById(R.id.tv_lon);
-        tv_altitude= findViewById(R.id.tv_altitude);
-        tv_accurancy= findViewById(R.id.tv_accuracy);
-        tv_speed= findViewById(R.id.tv_speed);
-        tv_sensor= findViewById(R.id.tv_sensor);
-        tv_adress= findViewById(R.id.tv_sensor);
-        tv_updates= findViewById(R.id.tv_address);
+        tv_latiency= (TextView)findViewById(R.id.tv_lat);
+        tv_longitude= (TextView)findViewById(R.id.tv_lon);
+        tv_altitude= (TextView)findViewById(R.id.tv_altitude);
+        tv_accurancy= (TextView)findViewById(R.id.tv_accuracy);
+        tv_speed= (TextView)findViewById(R.id.tv_speed);
+        tv_sensor= (TextView)findViewById(R.id.tv_sensor);
+        tv_adress= (TextView)findViewById(R.id.tv_address);
+        tv_updates= (TextView)findViewById(R.id.tv_updates);
         sw_onlocationchange= findViewById(R.id.sw_locationsupdates);
         sw_ongpschange= findViewById(R.id.sw_gps);
 
@@ -132,6 +144,15 @@ public class MainActivity extends AppCompatActivity {
 
         updateGPS();
 
+        //Accelerometer
+        sensorManager= (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensor= sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(this, sensor, (int) GRAVITY_EARTH);
+
+        tv_X= (TextView)findViewById(R.id.tv_x);
+        tv_Y= (TextView)findViewById(R.id.tv_y);
+        tv_Z= (TextView)findViewById(R.id.tv_z);
+
 
         //CAMERA
         Button roadCamButton = findViewById(R.id.road_camera_button);
@@ -142,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //GPS METHODS
     private void stopLocationChanged() {
         tv_updates.setText("");
         tv_latiency.setText("");
@@ -185,8 +207,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Location location) {
                     updateUIValue(location);
-
-
                 }
             });
         }
@@ -227,5 +247,18 @@ public class MainActivity extends AppCompatActivity {
         catch (Exception e) {
             tv_adress.setText("Nisem našel naslova ");
         }
+    }
+
+    //Accelerometer Methods
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        tv_X.setText(String.valueOf(event.values[0]));
+        tv_Y.setText(String.valueOf(event.values[1]));
+        tv_Z.setText(String.valueOf(event.values[2]));
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }
