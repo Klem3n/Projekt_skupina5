@@ -44,6 +44,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+var scraper = require('./scraper');
+scraper();
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -64,8 +66,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-const port = 9000
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 module.exports = app;

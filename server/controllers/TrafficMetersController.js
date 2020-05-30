@@ -23,6 +23,35 @@ module.exports = {
     },
 
     /**
+     * TrafficMetersController.recieve()
+     */
+    recieve: function (req, res) {
+        console.log(req);
+        console.log(">... POST: /scrapedEvents -- Recieved " + req.body.num + " events");
+        req.body.events.forEach(function(event) {
+
+            var scrapper = new TrafficMetersModel({
+                Location : event.Location,
+                Road : event.Road,
+                Direction : event.Direction,
+                NumberofVehicles : event.NumberofVehicles,
+                Speed : event.Speed,
+                Condition : event.Condition,
+            });
+
+            scrapper.save(function (err, result) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when saving TrafficMeters.',
+                        error: err
+                    });
+                }
+                return res.status(201).json(TrafficMeters);
+            });
+        })
+    },
+
+    /**
      * TrafficMetersController.show()
      */
     show: function (req, res) {
@@ -130,4 +159,6 @@ module.exports = {
             return res.status(204).json();
         });
     }
+
+    
 };

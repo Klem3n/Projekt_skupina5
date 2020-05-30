@@ -16,7 +16,7 @@ router.get('/:id', TrafficMetersController.show);
 /*
  * POST
  */
-router.post('/', TrafficMetersController.create);
+router.post('/', TrafficMetersController.recieve);
 
 /*
  * PUT
