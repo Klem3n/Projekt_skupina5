@@ -7,56 +7,131 @@
     tools:context=".app.activity.MainActivity">
 
     <TextView
-        android:id="@+id/tv_xlab"
+        android:id="@+id/tv_gyrz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="Z"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_accz"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="@+id/tv_accz"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tv_gyry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="Y"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_accy"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="@+id/tv_accy"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tv_gyrx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="X"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_accx"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="@+id/tv_accx"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tv_gyrzlab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Z"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_accz"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="@+id/tv_accz" />
+
+    <TextView
+        android:id="@+id/gyrylab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Y"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_accy"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="@+id/tv_accy" />
+
+    <TextView
+        android:id="@+id/gyrxlab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="X"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_accx"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="@+id/tv_accx" />
+
+    <TextView
+        android:id="@+id/tv_accelerometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Accelerometer"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+    <TextView
+        android:id="@+id/tv_accxlab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:text="X"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_accelerometer" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_gyroscope" />
 
     <TextView
-        android:id="@+id/tv_zlab"
+        android:id="@+id/tv_acczlab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:text="Z"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_y" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_accy" />
 
     <TextView
-        android:id="@+id/tv_ylab"
+        android:id="@+id/tv_accylab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:text="Y"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_x" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_accx" />
 
     <TextView
-        android:id="@+id/tv_z"
+        android:id="@+id/tv_accz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:text="Z"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_zlab"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_acczlab"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_zlab" />
+        app:layout_constraintTop_toTopOf="@+id/tv_acczlab" />
 
     <TextView
-        android:id="@+id/tv_y"
+        android:id="@+id/tv_accy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:text="Y"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_ylab"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_accylab"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_ylab" />
+        app:layout_constraintTop_toTopOf="@+id/tv_accylab" />
 
     <TextView
         android:id="@+id/tv_labellat"
@@ -152,7 +227,7 @@
         android:layout_marginTop="16dp"
         android:text="Sensor:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sw_gps" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_labelupdates" />
 
     <TextView
         android:id="@+id/tv_sensor"
@@ -166,9 +241,10 @@
         android:id="@+id/tv_labelupdates"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Updates:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sw_locationsupdates" />
+        app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
     <TextView
         android:id="@+id/tv_updates"
@@ -184,18 +260,19 @@
         android:layout_height="wrap_content"
         android:checked="false"
         android:text="Location Updates"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_labelupdates"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline2" />
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="@+id/tv_labelupdates" />
 
     <Switch
         android:id="@+id/sw_gps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="GPS"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_sensor"
         app:layout_constraintStart_toStartOf="@+id/sw_locationsupdates"
-        app:layout_constraintTop_toBottomOf="@+id/tv_labelupdates" />
+        app:layout_constraintTop_toTopOf="@+id/tv_sensor" />
 
     <TextView
         android:id="@+id/tv_address"
@@ -229,30 +306,30 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/tv_x"
+        android:id="@+id/tv_accx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:text="X"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_xlab"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_accxlab"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_xlab" />
+        app:layout_constraintTop_toTopOf="@+id/tv_accxlab" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.6" />
+        app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/tv_accelerometer"
+        android:id="@+id/tv_gyroscope"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Accelerometer"
+        android:text="Gyroscope"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -260,6 +337,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.33" />
+        app:layout_constraintGuide_percent="0.35" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50121653" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
