@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".app.activity.MainActivity">
 
+    <Button
+        android:id="@+id/send_data_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/send_location"
+        android:onClick="sendLocation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/tv_gyrz"
         android:layout_width="wrap_content"

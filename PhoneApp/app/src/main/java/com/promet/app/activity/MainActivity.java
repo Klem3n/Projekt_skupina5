@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.FloatMath;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +38,12 @@ import com.promet.R;
 
 import org.opencv.android.OpenCVLoader;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
@@ -186,7 +191,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (gyrSensor != null) {
             sensorManager.registerListener(MainActivity.this, gyrSensor, SENSOR_DELAY_NORMAL);
         } else {
-            tv_gyrX.setText("Listener not registered");
+            tv_gyrX.setText("Sensor");
+            tv_gyrY.setText("Not");
+            tv_gyrZ.setText("Registered");
         }
 
         //Algorithm
@@ -298,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     //Accelerometer Methods
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
@@ -341,6 +349,50 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             counter++;
             String shakes = String.valueOf(counter) + " shakes";
             Log.d("NumShakes", shakes);
+        }
+    }
+
+
+
+    public void sendLocation(View view) {
+        if(!tv_longitude.equals("") && !tv_latiency.equals("")){
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+            thread.start();
+        }else{
+            runOnUiThread(()->
+                    Toast.makeText(getApplicationContext(), "Unable to send data!", Toast.LENGTH_SHORT).show());
+        }
+    }
+
+    protected void doInBackground(String... params) {
+        String urlString = params[0]; // URL to call
+        String data = params[1]; //data to post
+        OutputStream out = null;
+
+        try {
+            URL url = new URL("http://192.168.0.28:5000/api/v1/lokacija");
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setReadTimeout(10000);
+            urlConnection.setConnectTimeout(15000);
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            out = new BufferedOutputStream(urlConnection.getOutputStream());
+
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+            writer.write(data);
+            writer.flush();
+            writer.close();
+            out.close();
+
+            urlConnection.connect();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }

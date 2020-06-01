@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Prometna Infrastruktura - Skupina 5</string>
     <string name="road_camera">Road Camera</string>
+    <string name="send_location">Send</string>
 </resources>
