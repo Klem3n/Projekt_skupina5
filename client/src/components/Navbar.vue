@@ -32,6 +32,7 @@
       >⚡ API</a>
 
       <router-link to="/livecam" class="navbar-item">📸 Vozišča v živo</router-link>
+      <router-link to="/maps" class="navbar-item">🗺 Zemljevid</router-link>
 
       <a class="navbar-item">💡 O projektu</a>
     </div>

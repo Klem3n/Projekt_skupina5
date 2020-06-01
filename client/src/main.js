@@ -3,10 +3,18 @@ import VueRouter from 'vue-router'
 import App from './App.vue'
 import LiveCam from './components/LiveCam.vue'
 import Home from './components/Home.vue'
+import * as VueGoogleMaps from "vue2-google-maps"
+import GoogleMap from './components/GoogleMap.vue'
 
 Vue.config.productionTip = false
 
 Vue.use(VueRouter)
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: "AIzaSyDoJ2D6FSbod7hzBYywCaFBuOKjnBdesec",
+    libraries: "places"
+  }
+})
 
 const routes = [{
   path: '/',
@@ -14,6 +22,9 @@ const routes = [{
 }, {
   path: '/livecam',
   component: LiveCam
+}, {
+  path: '/maps',
+  component: GoogleMap
 }]
 
 const router = new VueRouter({
