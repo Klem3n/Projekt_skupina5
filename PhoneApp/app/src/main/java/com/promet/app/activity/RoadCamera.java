@@ -79,9 +79,7 @@ public class RoadCamera extends AppCompatActivity implements CameraBridgeViewBas
         //Core.flip(cameraView.t(), cameraViewT, 1);
         //Imgproc.resize(cameraViewT, cameraViewT, cameraView.size());
 
-        signDetection.run(cameraView);
-
-        return cameraView;
+        return signDetection.run(cameraView);
     }
 
     @Override

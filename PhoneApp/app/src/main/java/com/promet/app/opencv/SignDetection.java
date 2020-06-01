@@ -68,15 +68,15 @@ public class SignDetection {
         }
     }
 
-    public void run(Mat cameraFrame){
+    public Mat run(Mat cameraFrame){
         Mat clone = cameraFrame.clone();
         faceDetector
                 .detectMultiScale(cameraFrame, signDetections, 1.1, 1, 0, new Size(20, 20), new Size());
 
-        detectedSigns(clone, cameraFrame, signDetections.toArray());
+        return detectedSigns(clone, cameraFrame, signDetections.toArray());
     }
 
-    public void detectedSigns(Mat clone, Mat imageMatrix, Rect[] rects){
+    public Mat detectedSigns(Mat clone, Mat imageMatrix, Rect[] rects){
         for (Rect rect : rects) {
             Mat cropped = new Mat(imageMatrix, rect);
 
@@ -98,12 +98,14 @@ public class SignDetection {
                 Imgproc.putText(clone, signName, new Point(rect.x, y+10), 5, 2, new Scalar(255, 255, 255));
             }
         }
+
+        return clone;
     }
 
     private String getSign(Mat sign){
         Mat diff = new Mat();
 
-        double maxMatch = 0.0;
+        double maxMatch = -10000;
         String maxMatchName = null;
 
         Imgproc.resize(sign, sign, new Size(SIGN_IMAGE_SIZE, SIGN_IMAGE_SIZE));
@@ -115,7 +117,7 @@ public class SignDetection {
         for(Map.Entry<String, Mat> entry : signImages.entrySet()){
             double match = compareHist(sign, entry.getValue());
 
-            System.out.println(entry.getKey() + " - match: " + match);
+            //System.out.println(entry.getKey() + " - match: " + match);
             /*try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
