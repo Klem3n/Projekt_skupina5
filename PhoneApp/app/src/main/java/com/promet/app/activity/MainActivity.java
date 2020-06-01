@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -21,6 +23,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -40,20 +43,15 @@ import com.promet.app.api.PostAPI;
 
 import org.opencv.android.OpenCVLoader;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     //GPS
@@ -124,6 +122,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
+    SharedPreferences sharedPreferences;
+    private String uuid;
+
+    public static Location location;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,7 +156,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
 
-                updateUIValue(locationResult.getLastLocation());
+                updateUIValue(location = locationResult.getLastLocation());
+
+
+                try {
+                    postLocationData(location);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -232,6 +242,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             Intent intent = new Intent(this, RoadCamera.class);
             startActivity(intent);
         });
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if(!sharedPreferences.contains("uuid")){
+            uuid = UUID.randomUUID().toString().replace("-", "");
+            editor.putString("uuid", uuid);
+
+        } else {
+            uuid = sharedPreferences.getString("uuid", "");
+        }
     }
 
     //GPS METHODS
@@ -323,12 +345,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } catch (Exception e) {
             tv_adress.setText("Nisem našel naslova ");
         }
-
-        try {
-            testPost(location);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     //Accelerometer Methods
@@ -401,15 +417,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    private void testPost(Location location) throws IOException {
+    private void postLocationData(Location location) throws IOException {
         Map<String, String> params = new HashMap<>();
 
+        params.put("uuid", uuid);
         params.put("longitude", String.valueOf(location.getLongitude()));
         params.put("latitude", String.valueOf(location.getLatitude()));
         params.put("speed", String.valueOf(location.getSpeed()));
         params.put("address", geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1).get(0).getAddressLine(0));
 
-        new PostAPI().execute(getPostDataString(params));
+        new PostAPI().execute("http://192.168.0.28:5000/api/v1/lokacija", getPostDataString(params));
     }
 
     private String getPostDataString(Map<String, String> params) throws UnsupportedEncodingException {
