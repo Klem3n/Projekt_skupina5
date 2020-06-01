@@ -16,6 +16,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.FloatMath;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
-    Boolean isUpdated=false;
+    Boolean isUpdated = false;
     LocationCallback locationCallBack;
 
     Geocoder geocoder;
@@ -77,9 +78,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView tv_gyrZ;
     private Sensor gyrSensor;
 
+    //Algorithm
+    private int counter = 0;
+    private long currAcc;
+    private long lastAcc;
+    private long shake;
+
     //OPENCV
     static {
-        if(OpenCVLoader.initDebug()){
+        if (OpenCVLoader.initDebug()) {
             Log.d("MainActivity", "OpenCV configured successfully");
         } else {
             Log.d("MainActivity", "OpenCV configuration failed");
@@ -91,16 +98,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //GPS
-        tv_latiency= (TextView)findViewById(R.id.tv_lat);
-        tv_longitude= (TextView)findViewById(R.id.tv_lon);
-        tv_altitude= (TextView)findViewById(R.id.tv_altitude);
-        tv_accurancy= (TextView)findViewById(R.id.tv_accuracy);
-        tv_speed= (TextView)findViewById(R.id.tv_speed);
-        tv_sensor= (TextView)findViewById(R.id.tv_sensor);
-        tv_adress= (TextView)findViewById(R.id.tv_address);
-        tv_updates= (TextView)findViewById(R.id.tv_updates);
-        sw_onlocationchange= findViewById(R.id.sw_locationsupdates);
-        sw_ongpschange= findViewById(R.id.sw_gps);
+        tv_latiency = (TextView) findViewById(R.id.tv_lat);
+        tv_longitude = (TextView) findViewById(R.id.tv_lon);
+        tv_altitude = (TextView) findViewById(R.id.tv_altitude);
+        tv_accurancy = (TextView) findViewById(R.id.tv_accuracy);
+        tv_speed = (TextView) findViewById(R.id.tv_speed);
+        tv_sensor = (TextView) findViewById(R.id.tv_sensor);
+        tv_adress = (TextView) findViewById(R.id.tv_address);
+        tv_updates = (TextView) findViewById(R.id.tv_updates);
+        sw_onlocationchange = findViewById(R.id.sw_locationsupdates);
+        sw_ongpschange = findViewById(R.id.sw_gps);
 
         locationRequest = new LocationRequest();
         locationRequest.setInterval(1000 * INTERVAL_DEFAULT_TIMER);
@@ -124,65 +131,64 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         sw_ongpschange.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View v) {
+            public void onClick(View v) {
                 if (sw_ongpschange.isChecked()) {
                     locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                     tv_sensor.setText("GPS");
-                }
-                else {
+                } else {
                     locationRequest.setPriority(PRIORITY_LOCATION_ACCURACY);
                     tv_sensor.setText("Wi-Fi + Towers");
                 }
             }
-        } );
+        });
 
         sw_onlocationchange.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View v) {
+            public void onClick(View v) {
                 if (sw_ongpschange.isChecked()) {
                     startLocationChanged();
 
-                }
-                else {
+                } else {
                     stopLocationChanged();
                 }
             }
-        } );
+        });
 
         updateGPS();
 
         //Sensors
-        sensorManager= (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         //Accelerometer
         accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        if(accSensor != null){
+        if (accSensor != null) {
             sensorManager.registerListener(MainActivity.this, accSensor, (int) GRAVITY_EARTH);
-        }
-        else {
+        } else {
             tv_accX.setText("Listener not registered");
         }
-        tv_accX = (TextView)findViewById(R.id.tv_accx);
-        tv_accY = (TextView)findViewById(R.id.tv_accy);
-        tv_accZ = (TextView)findViewById(R.id.tv_accz);
+        tv_accX = (TextView) findViewById(R.id.tv_accx);
+        tv_accY = (TextView) findViewById(R.id.tv_accy);
+        tv_accZ = (TextView) findViewById(R.id.tv_accz);
 
         //Gyroscope
-        tv_gyrX = (TextView)findViewById(R.id.tv_gyrx);
-        tv_gyrY = (TextView)findViewById(R.id.tv_gyry);
-        tv_gyrZ = (TextView)findViewById(R.id.tv_gyrz);
+        tv_gyrX = (TextView) findViewById(R.id.tv_gyrx);
+        tv_gyrY = (TextView) findViewById(R.id.tv_gyry);
+        tv_gyrZ = (TextView) findViewById(R.id.tv_gyrz);
         gyrSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        if(gyrSensor != null){
+        if (gyrSensor != null) {
             sensorManager.registerListener(MainActivity.this, gyrSensor, SENSOR_DELAY_NORMAL);
-        }
-        else {
+        } else {
             tv_gyrX.setText("Listener not registered");
         }
 
-
+        //Algorithm
+        currAcc = (long) SensorManager.GRAVITY_EARTH;
+        lastAcc = (long) SensorManager.GRAVITY_EARTH;
+        shake = (long) 0.00;
 
         //CAMERA
         Button roadCamButton = findViewById(R.id.road_camera_button);
 
-        roadCamButton.setOnClickListener((v)->{
+        roadCamButton.setOnClickListener((v) -> {
             Intent intent = new Intent(this, RoadCamera.class);
             startActivity(intent);
         });
@@ -204,6 +210,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void startLocationChanged() {
         tv_updates.setText("Lokacija se sledi");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallBack, null);
         updateGPS();
     }
@@ -214,13 +230,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         switch (requestCode) {
             case PERMISSIONS_FINE_LOCATION:
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        updateGPS();
-                    }
-                    else {
-                        Toast.makeText(this, "Nimate sve dovoljeno", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    updateGPS();
+                } else {
+                    Toast.makeText(this, "Nimate sve dovoljeno", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
         }
     }
 
@@ -234,16 +249,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     updateUIValue(location);
                 }
             });
-        }
-        else {
+        } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String [] {Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
             }
         }
     }
 
     private void updateUIValue(Location location) {
-        if(location == null)
+        if (location == null)
             return;
 
         tv_latiency.setText(String.valueOf(location.getLatitude()));
@@ -252,15 +266,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if (location.hasSpeed()) {
             tv_speed.setText(String.valueOf(location.getSpeed()));
-        }
-        else {
+        } else {
             tv_speed.setText("Ni mogoce");
         }
 
         if (location.hasAltitude()) {
             tv_altitude.setText(String.valueOf(location.getAltitude()));
-        }
-        else {
+        } else {
             tv_altitude.setText("Ni mogoce");
         }
 
@@ -268,8 +280,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         try {
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             tv_adress.setText(addresses.get(0).getAddressLine(0));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             tv_adress.setText("Nisem našel naslova ");
         }
     }
@@ -282,9 +293,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             tv_accX.setText(String.valueOf(event.values[0]));
             tv_accY.setText(String.valueOf(event.values[1]));
             tv_accZ.setText(String.valueOf(event.values[2]));
-        }
-
-        else if (sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            accAlgorithm(event);
+        } else if (sensor.getType() == Sensor.TYPE_GYROSCOPE) {
             tv_gyrX.setText(String.valueOf(event.values[0]));
             tv_gyrY.setText(String.valueOf(event.values[1]));
             tv_gyrZ.setText(String.valueOf(event.values[2]));
@@ -294,5 +304,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    private void accAlgorithm(SensorEvent event) {
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
+        lastAcc = currAcc;
+        currAcc = (long) Math.sqrt(x * x + y * y + z * z); // / (GRAVITY_EARTH*GRAVITY_EARTH);
+        long actualTime = event.timestamp;
+        shake = (long) (shake * 0.9 + (currAcc - lastAcc));
+        if (lastAcc-currAcc > 9) {
+            Toast.makeText(this, "Device was shuffed", Toast.LENGTH_SHORT).show();
+
+            if (x > 9 || x < -9) {
+                Log.d("X", "X axis is shuffed");
+            } else if (y > 9 || y < -9) {
+                Log.d("Y", "Y axis is shuffed");
+            } else if (z > 9 || z < -9) {
+                Log.d("Z", "Z axis is shuffed");
+            }
+            counter++;
+            String shakes = String.valueOf(counter) + " shakes";
+            Log.d("NumShakes", shakes);
+        }
     }
 }
