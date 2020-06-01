@@ -6,14 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".app.activity.MainActivity">
 
-    <Button
-        android:id="@+id/send_data_button"
+    <TextView
+        android:id="@+id/tv_labcondition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/send_location"
-        android:onClick="sendLocation"
+        android:layout_marginBottom="50dp"
+        android:text="Condition:"
+        android:textColor="#000000"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -356,5 +356,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.50121653" />
+
+    <TextView
+        android:id="@+id/tv_condition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_labcondition"
+        app:layout_constraintStart_toEndOf="@+id/tv_labcondition"
+        app:layout_constraintTop_toTopOf="@+id/tv_labcondition" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

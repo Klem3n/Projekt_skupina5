@@ -18,6 +18,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -51,6 +52,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     //GPS
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public static final int SENSOR_DELAY_NORMAL = SensorManager.SENSOR_DELAY_NORMAL;
     public static final int DEFAULT_AMPLITUDE = VibrationEffect.DEFAULT_AMPLITUDE;
     public static final double Vibrator_Time_Seconds = 0.5;
+    private static final long START_TIME_IN_SECONDS = 60;
 
     private TextView tv_latiency;
     private TextView tv_longitude;
@@ -100,9 +104,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private long currAcc;
     private long lastAcc;
     private long shake;
+    private TextView tv_condition;
 
     //Vibrator
     Vibrator vibrator;
+
+    //Timer
+    private CountDownTimer mCountDownTimer;
+    private boolean mTimerRunning;
+    private long mTimeLeftInMillis = START_TIME_IN_SECONDS * 1000;
+    private Vector numHoles;
 
     //OPENCV
     static {
@@ -133,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         locationRequest.setInterval(1000 * INTERVAL_DEFAULT_TIMER);
         locationRequest.setFastestInterval(1000 * INTERVAL_FAST_TIMER);
         locationRequest.setPriority(PRIORITY_LOCATION_ACCURACY);
+
+        startTimer();
 
         locationCallBack = new LocationCallback() {
 
@@ -206,6 +219,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         currAcc = (long) SensorManager.GRAVITY_EARTH;
         lastAcc = (long) SensorManager.GRAVITY_EARTH;
         shake = (long) 0.00;
+        numHoles = new Vector();
+        tv_condition=findViewById(R.id.tv_condition);
 
         //Vibrator
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -320,6 +335,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onSensorChanged(SensorEvent event) {
+        if (mTimerRunning==false) {
+            resetTimer();
+            startTimer();
+        }
         Sensor sensor = event.sensor;
         if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             tv_accX.setText(String.valueOf(event.values[0]));
@@ -346,10 +365,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         lastAcc = currAcc;
         currAcc = (long) Math.sqrt(x * x + y * y + z * z); // / (GRAVITY_EARTH*GRAVITY_EARTH);
         long actualTime = event.timestamp;
-        shake = (long) (shake * 0.9 + (currAcc - lastAcc));
-        if (lastAcc-currAcc > 9) {
+        double elapsedTimeInSecond = (double) actualTime / 1_000_000_000;
+        //long convert = TimeUnit.MILLISECONDS.convert(actualTime, TimeUnit.NANOSECONDS);
+        shake = (long) (shake / GRAVITY_EARTH + (currAcc - lastAcc));
+        if (shake > GRAVITY_EARTH) {
+            Log.d("Shake", String.valueOf(shake));
+            Log.d("Curr", String.valueOf(currAcc));
+            Log.d("Time", String.valueOf(elapsedTimeInSecond));
             Toast.makeText(this, "Device was shuffed", Toast.LENGTH_SHORT).show();
-            vibrator.vibrate(VibrationEffect.createOneShot((long) (Vibrator_Time_Seconds*1000), DEFAULT_AMPLITUDE));
+            vibrator.vibrate(VibrationEffect.createOneShot((long) (Vibrator_Time_Seconds*10000), DEFAULT_AMPLITUDE));
 
             if (x > 9 || x < -9) {
                 Log.d("X", "X axis is shuffed");
@@ -358,9 +382,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             } else if (z > 9 || z < -9) {
                 Log.d("Z", "Z axis is shuffed");
             }
-            counter++;
-            String shakes = String.valueOf(counter) + " shakes";
-            Log.d("NumShakes", shakes);
+            if (mTimerRunning && !tv_speed.equals("")) {
+                counter++;
+                numHoles.add(tv_adress);
+                String shakes = String.valueOf(counter) + " shakes";
+                Log.d("NumShakes", shakes);
+                if(numHoles.capacity() == 0) {
+                    tv_condition.setText("Excellent");
+                }
+                else if(numHoles.capacity() < 3) {
+                    tv_condition.setText("Good");
+
+                }
+                else if(numHoles.capacity() >= 3) {
+                    tv_condition.setText("Bad");
+                }
+            }
         }
     }
 
@@ -391,4 +428,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         return result.toString();
     }
+    private void startTimer() {
+        mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 10000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mTimeLeftInMillis = millisUntilFinished;
+                Log.d("LEFT!!!", String.valueOf(mTimeLeftInMillis));
+            }
+            @Override
+            public void onFinish() {
+                mTimerRunning = false;
+            }
+        }.start();
+        mTimerRunning = true;
+    }
+
+    private void resetTimer() {
+        mTimeLeftInMillis = START_TIME_IN_SECONDS*1000;
+        counter=0;
+        numHoles.clear();
+        tv_condition.setText("Good");
+    }
+
 }
