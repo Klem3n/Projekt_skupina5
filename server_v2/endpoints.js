@@ -82,6 +82,10 @@ router.get('/api/v1/kamere/:password', async (req, res) => {
     res.send(JSON.stringify(await CameraScraper.scrapeToFile(req, res)))
 })
 
+router.post('/api/v1/ceste', async (req, res) => {
+    Ceste.postSigns(req, res)
+})
+
 initScraper();
 
 async function initScraper(){
