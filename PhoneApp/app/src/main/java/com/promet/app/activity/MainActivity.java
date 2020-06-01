@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Boolean isUpdated = false;
     LocationCallback locationCallBack;
 
-    Geocoder geocoder;
+    public static Geocoder geocoder;
 
     //Sensors
     private SensorManager sensorManager;
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     SharedPreferences sharedPreferences;
-    private String uuid;
+    public static String uuid;
 
     public static Location location;
 
@@ -429,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         new PostAPI().execute("http://192.168.0.28:5000/api/v1/lokacija", getPostDataString(params));
     }
 
-    private String getPostDataString(Map<String, String> params) throws UnsupportedEncodingException {
+    public static String getPostDataString(Map<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
         for(Map.Entry<String, String> entry : params.entrySet()){

@@ -93,6 +93,10 @@ router.get('/api/v1/kamere/:password', async (req, res) => {
     res.send(JSON.stringify(await CameraScraper.scrapeToFile(req, res)))
 })
 
+router.post('/api/v1/ceste', async (req, res) => {
+    Ceste.sendSigns(req, res)
+})
+
 // dobi lokacijo iz android appa
 router.post('/api/v1/lokacija', async (req, res) => {
     //Lokacija.save(req, res);
@@ -106,10 +110,10 @@ router.post('/api/v1/lokacija', async (req, res) => {
 
     loc.save((err, location) => {
         if (err) {
-            return res.send(500)
+            //return res.send(500)
         } else {
             // console.log(res.status(201).json(user))
-            return res.sendStatus(200)
+            //return res.sendStatus(200)
         }
     })
 
