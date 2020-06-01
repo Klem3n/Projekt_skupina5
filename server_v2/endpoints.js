@@ -12,18 +12,21 @@ const router = express.Router()
 var data = null;
 var lastScrape = new Date(null);
 
+// Vrne vse podatke iz promet.si tabele
 router.get('/api/v1/all', async (req, res) => {
     data = await Scraper.runScraper();
 
     res.send(JSON.stringify(data));
 })
 
+// vrne seznam cest
 router.get('/api/v1/ceste', async (req, res) => {
     data = await Scraper.runScraper();
 
     res.send(JSON.stringify(Ceste.run(req, data)));
 })
 
+// vrne povprecno hitrost na vsaki izmed cest
 router.get('/api/v1/povprecna_hitrost', async (req, res) => {
     data = await Scraper.runScraper();
 
@@ -34,6 +37,7 @@ router.get('/api/v1/povprecna_hitrost', async (req, res) => {
     }
 })
 
+// vrne povprecno hitrost za podano cesto
 router.get('/api/v1/povprecna_hitrost/:road', async (req, res) => {
     data = await Scraper.runScraper();
 
@@ -44,6 +48,7 @@ router.get('/api/v1/povprecna_hitrost/:road', async (req, res) => {
     }
 })
 
+// vrne par cesta : gostota
 router.get('/api/v1/gostota', async (req, res) => {
     data = await Scraper.runScraper();
 
@@ -54,6 +59,7 @@ router.get('/api/v1/gostota', async (req, res) => {
     }
 })
 
+// vrne trenutno gostoto prometa na podani cesti kot parameter :density
 router.get('/api/v1/gostota/:density', async (req, res) => {
     data = await Scraper.runScraper();
 
@@ -64,6 +70,7 @@ router.get('/api/v1/gostota/:density', async (req, res) => {
     }
 })
 
+// vrne podatno gostoto :density na podani cesti :road
 router.get('/api/v1/gostota/:density/:road', async (req, res) => {
     data = await Scraper.runScraper();
 
@@ -74,6 +81,7 @@ router.get('/api/v1/gostota/:density/:road', async (req, res) => {
     }
 })
 
+// vrne JSON objekt trenutnih live radarskih slik in imena cest / predorov
 router.get('/api/v1/kamere', async (req, res) => {
     res.send(JSON.stringify(await CameraScraper.getCameras()))
 })
