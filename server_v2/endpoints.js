@@ -127,6 +127,15 @@ router.post('/api/v1/lokacija', async (req, res) => {
     })
 })
 
+router.get('/api/v1/lokacija', async (req, res) => {
+    LocationModel.find().sort({
+        _id: -1
+    }).exec((err, docs) => {
+        //console.log(docs)
+        res.send(JSON.stringify(docs))
+    })
+})
+
 initScraper();
 
 async function initScraper() {
