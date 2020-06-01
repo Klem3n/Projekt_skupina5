@@ -1,10 +1,12 @@
 package com.promet.app.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -16,6 +18,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private static final int PERMISSIONS_FINE_LOCATION = 23;
     public static final float GRAVITY_EARTH = SensorManager.GRAVITY_EARTH;
     public static final int SENSOR_DELAY_NORMAL = SensorManager.SENSOR_DELAY_NORMAL;
+    public static final int DEFAULT_AMPLITUDE = VibrationEffect.DEFAULT_AMPLITUDE;
+    public static final double Vibrator_Time_Seconds = 0.5;
 
     private TextView tv_latiency;
     private TextView tv_longitude;
@@ -83,6 +89,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private long currAcc;
     private long lastAcc;
     private long shake;
+
+    //Vibrator
+    Vibrator vibrator;
 
     //OPENCV
     static {
@@ -184,6 +193,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         currAcc = (long) SensorManager.GRAVITY_EARTH;
         lastAcc = (long) SensorManager.GRAVITY_EARTH;
         shake = (long) 0.00;
+
+        //Vibrator
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         //CAMERA
         Button roadCamButton = findViewById(R.id.road_camera_button);
@@ -306,6 +318,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void accAlgorithm(SensorEvent event) {
         float x = event.values[0];
         float y = event.values[1];
@@ -316,6 +329,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         shake = (long) (shake * 0.9 + (currAcc - lastAcc));
         if (lastAcc-currAcc > 9) {
             Toast.makeText(this, "Device was shuffed", Toast.LENGTH_SHORT).show();
+            vibrator.vibrate(VibrationEffect.createOneShot((long) (Vibrator_Time_Seconds*1000), DEFAULT_AMPLITUDE));
 
             if (x > 9 || x < -9) {
                 Log.d("X", "X axis is shuffed");
