@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.github.kevinsawicki.http.HttpRequest;
 import com.promet.R;
 import com.promet.app.api.PostAPI;
 import com.promet.app.opencv.SignDetection;
@@ -26,6 +28,7 @@ import org.opencv.core.Core;
 import org.opencv.core.CvException;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.BufferedWriter;
@@ -36,6 +39,13 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -147,7 +157,6 @@ public class RoadCamera extends AppCompatActivity implements CameraBridgeViewBas
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
     private void runDetection() {
         SignDetection.Detection detection = signDetection.run(cameraView);
 
@@ -162,7 +171,26 @@ public class RoadCamera extends AppCompatActivity implements CameraBridgeViewBas
         catch (CvException e){Log.d("Exception",e.getMessage());}
 
         if(detection.success){
-
+            try {
+                postLocationData(Arrays.asList(detection.names).stream().filter(Objects::nonNull).collect(Collectors.toList()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    private void postLocationData(List<String> znaki) throws IOException {
+        if(MainActivity.location == null)
+            return;
+
+        Map<String, String> params = new HashMap<>();
+
+        params.put("uuid", MainActivity.uuid);
+        params.put("longitude", String.valueOf(MainActivity.location.getLongitude()));
+        params.put("latitude", String.valueOf(MainActivity.location.getLatitude()));
+        params.put("signs", Arrays.toString(znaki.toArray()));
+
+        new PostAPI().execute("http://192.168.0.28:5000/api/v1/ceste", MainActivity.getPostDataString(params));
+        //HttpRequest.post("http://192.168.0.28:5000/api/v1/ceste").send(MainActivity.getPostDataString(params)).code();
     }
 }

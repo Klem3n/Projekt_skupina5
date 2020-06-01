@@ -22,6 +22,8 @@ public class PostAPI extends AsyncTask<String, String, String> {
         String urlString = params[0]; // URL to call
         String data = params[1]; //data to post
 
+        System.out.println(data);
+
         try {
             HttpRequest.post(urlString).send(data).code();
         } catch (Exception e) {
