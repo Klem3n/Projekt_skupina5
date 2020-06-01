@@ -65,24 +65,16 @@ public class SignDetection {
         }
     }
 
-    public Detection run(Mat cameraFrame){
+    public void run(Mat cameraFrame){
         Mat clone = cameraFrame.clone();
         faceDetector
                 .detectMultiScale(cameraFrame, signDetections, 1.1, 1, 0, new Size(20, 20), new Size());
 
-        return detectedSigns(clone, cameraFrame, signDetections.toArray());
+        detectedSigns(clone, cameraFrame, signDetections.toArray());
     }
 
-    public Detection detectedSigns(Mat clone, Mat imageMatrix, Rect[] rects){
-        Detection detection = new Detection();
-
-        detection.clone = clone;
-        detection.rects = rects;
-        detection.names = new String[rects.length];
-
-        int count = 0;
+    public void detectedSigns(Mat clone, Mat imageMatrix, Rect[] rects){
         for (Rect rect : rects) {
-
             Mat cropped = new Mat(imageMatrix, rect);
 
             String signName = null;
@@ -102,19 +94,13 @@ public class SignDetection {
 
                 Imgproc.putText(clone, signName, new Point(rect.x, y+10), 5, 2, new Scalar(255, 255, 255));
             }
-
-            detection.names[count] = signName;
-            detection.success = true;
-            count++;
         }
-
-        return detection;
     }
 
     private String getSign(Mat sign){
         Mat diff = new Mat();
 
-        double maxMatch = -10000;
+        double maxMatch = 0.0;
         String maxMatchName = null;
 
         Imgproc.resize(sign, sign, new Size(SIGN_IMAGE_SIZE, SIGN_IMAGE_SIZE));
@@ -126,7 +112,7 @@ public class SignDetection {
         for(Map.Entry<String, Mat> entry : signImages.entrySet()){
             double match = compareHist(sign, entry.getValue());
 
-            //System.out.println(entry.getKey() + " - match: " + match);
+            System.out.println(entry.getKey() + " - match: " + match);
             /*try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -204,15 +190,8 @@ public class SignDetection {
         }
     }
 
-    public class Detection{
-        public Mat clone;
+    public class Detector {
 
-        public Rect[] rects;
-        public String[] names;
-
-        public boolean success = false;
-    }
-    public static class Detector {
         private static final Logger logger = Logger.getLogger(Detector.class.getName());
         Integer minSize1;
         Integer maxSize1;
@@ -221,9 +200,10 @@ public class SignDetection {
         private Activity activity;
         private CascadeClassifier cascadeClassifier1;
         private CascadeClassifier cascadeClassifier2;
-
-        public Detector(Activity activity) {
+        public Detector(Activity activity){
             this.activity = activity;
+            loadCascadeFile(1);
+            loadCascadeFile(2);
             sp = PreferenceManager.getDefaultSharedPreferences(activity);
             minSize1 = Integer.parseInt(sp.getString("minSize1", "30"));
             maxSize1 = Integer.parseInt(sp.getString("maxSize1", "70"));
@@ -231,8 +211,7 @@ public class SignDetection {
             maxSize2 = Integer.parseInt(sp.getString("maxSize2", "70"));
 
         }
-
-        public void Detect(Mat mGray, MatOfRect signs, int type) {
+        public void Detect(Mat mGray,MatOfRect signs,int type){
             //loadCascadeFile(type, cascadeClassifier);
 //		loadCascadeFile(type);
             switch (type) {
@@ -252,6 +231,50 @@ public class SignDetection {
                     } else {
                         Log.e("s", "cascade");
                     }
+            }
+        }
+        private void loadCascadeFile(int type){
+            try {
+                InputStream is;
+                File cascadeDir = activity.getDir("cascade", Context.MODE_PRIVATE);
+                File cascadeFile;
+                switch (type) {
+                    case 1:
+                        is = activity.getResources().openRawResource(R.raw.circle);
+
+                        cascadeFile = new File(cascadeDir, "circle.xml");
+                        break;
+                    case 2:
+                    default:
+                        is = activity.getResources().openRawResource(R.raw.triangle);
+
+                        cascadeFile = new File(cascadeDir, "triangle.xml");
+                        break;
+                }
+
+                FileOutputStream os = new FileOutputStream(cascadeFile);
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, bytesRead);
+                }
+                is.close();
+                os.close();
+
+                // Load the cascade classifier
+                switch (type) {
+                    case 1:
+                        cascadeClassifier1 = new CascadeClassifier(cascadeFile.getAbsolutePath());
+                        break;
+                    case 2:
+                    default:
+                        cascadeClassifier2 = new CascadeClassifier(cascadeFile.getAbsolutePath());
+                        break;
+                }
+
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
     }
