@@ -10,7 +10,7 @@ const Lokacija = require('./lokacija')
 
 const router = express.Router()
 
-const LocationModel = require('models/locationModel.js')
+const LocationModel = require('./models/locationModel.js')
 
 var data = null;
 var lastScrape = new Date(null);
