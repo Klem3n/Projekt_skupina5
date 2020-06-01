@@ -1,10 +1,6 @@
 package com.promet.app.opencv;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.promet.R;
 import com.promet.app.activity.RoadCamera;
@@ -30,7 +26,6 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class SignDetection {
     MatOfByte mem = new MatOfByte();
@@ -65,16 +60,24 @@ public class SignDetection {
         }
     }
 
-    public void run(Mat cameraFrame){
+    public Detection run(Mat cameraFrame){
         Mat clone = cameraFrame.clone();
         faceDetector
                 .detectMultiScale(cameraFrame, signDetections, 1.1, 1, 0, new Size(20, 20), new Size());
 
-        detectedSigns(clone, cameraFrame, signDetections.toArray());
+        return detectedSigns(clone, cameraFrame, signDetections.toArray());
     }
 
-    public void detectedSigns(Mat clone, Mat imageMatrix, Rect[] rects){
+    public Detection detectedSigns(Mat clone, Mat imageMatrix, Rect[] rects){
+        Detection detection = new Detection();
+
+        detection.clone = clone;
+        detection.rects = rects;
+        detection.names = new String[rects.length];
+
+        int count = 0;
         for (Rect rect : rects) {
+
             Mat cropped = new Mat(imageMatrix, rect);
 
             String signName = null;
@@ -94,13 +97,19 @@ public class SignDetection {
 
                 Imgproc.putText(clone, signName, new Point(rect.x, y+10), 5, 2, new Scalar(255, 255, 255));
             }
+
+            detection.names[count] = signName;
+            detection.success = true;
+            count++;
         }
+
+        return detection;
     }
 
     private String getSign(Mat sign){
         Mat diff = new Mat();
 
-        double maxMatch = 0.0;
+        double maxMatch = -10000;
         String maxMatchName = null;
 
         Imgproc.resize(sign, sign, new Size(SIGN_IMAGE_SIZE, SIGN_IMAGE_SIZE));
@@ -112,7 +121,7 @@ public class SignDetection {
         for(Map.Entry<String, Mat> entry : signImages.entrySet()){
             double match = compareHist(sign, entry.getValue());
 
-            System.out.println(entry.getKey() + " - match: " + match);
+            //System.out.println(entry.getKey() + " - match: " + match);
             /*try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -190,92 +199,12 @@ public class SignDetection {
         }
     }
 
-    public class Detector {
+    public class Detection{
+        public Mat clone;
 
-        private static final Logger logger = Logger.getLogger(Detector.class.getName());
-        Integer minSize1;
-        Integer maxSize1;
-        Integer minSize2, maxSize2;
-        SharedPreferences sp;
-        private Activity activity;
-        private CascadeClassifier cascadeClassifier1;
-        private CascadeClassifier cascadeClassifier2;
-        public Detector(Activity activity){
-            this.activity = activity;
-            loadCascadeFile(1);
-            loadCascadeFile(2);
-            sp = PreferenceManager.getDefaultSharedPreferences(activity);
-            minSize1 = Integer.parseInt(sp.getString("minSize1", "30"));
-            maxSize1 = Integer.parseInt(sp.getString("maxSize1", "70"));
-            minSize2 = Integer.parseInt(sp.getString("minSize2", "30"));
-            maxSize2 = Integer.parseInt(sp.getString("maxSize2", "70"));
+        public Rect[] rects;
+        public String[] names;
 
-        }
-        public void Detect(Mat mGray,MatOfRect signs,int type){
-            //loadCascadeFile(type, cascadeClassifier);
-//		loadCascadeFile(type);
-            switch (type) {
-                case 1:
-                    if (cascadeClassifier1 != null && !cascadeClassifier1.empty()) {
-                        cascadeClassifier1.detectMultiScale(mGray, signs, 1.1, 3, 0
-                                , new Size(minSize1, minSize1), new Size(maxSize1, maxSize1));
-                    } else {
-                        Log.e("s", "cascade");
-                    }
-                    break;
-                case 2:
-                default:
-                    if (cascadeClassifier2 != null && !cascadeClassifier2.empty()) {
-                        cascadeClassifier2.detectMultiScale(mGray, signs, 1.1, 5, 0
-                                , new Size(minSize2, minSize2), new Size(maxSize2, maxSize2));
-                    } else {
-                        Log.e("s", "cascade");
-                    }
-            }
-        }
-        private void loadCascadeFile(int type){
-            try {
-                InputStream is;
-                File cascadeDir = activity.getDir("cascade", Context.MODE_PRIVATE);
-                File cascadeFile;
-                switch (type) {
-                    case 1:
-                        is = activity.getResources().openRawResource(R.raw.circle);
-
-                        cascadeFile = new File(cascadeDir, "circle.xml");
-                        break;
-                    case 2:
-                    default:
-                        is = activity.getResources().openRawResource(R.raw.triangle);
-
-                        cascadeFile = new File(cascadeDir, "triangle.xml");
-                        break;
-                }
-
-                FileOutputStream os = new FileOutputStream(cascadeFile);
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                while ((bytesRead = is.read(buffer)) != -1) {
-                    os.write(buffer, 0, bytesRead);
-                }
-                is.close();
-                os.close();
-
-                // Load the cascade classifier
-                switch (type) {
-                    case 1:
-                        cascadeClassifier1 = new CascadeClassifier(cascadeFile.getAbsolutePath());
-                        break;
-                    case 2:
-                    default:
-                        cascadeClassifier2 = new CascadeClassifier(cascadeFile.getAbsolutePath());
-                        break;
-                }
-
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+        public boolean success = false;
     }
 }
