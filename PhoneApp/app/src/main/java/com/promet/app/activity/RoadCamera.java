@@ -161,5 +161,8 @@ public class RoadCamera extends AppCompatActivity implements CameraBridgeViewBas
         }
         catch (CvException e){Log.d("Exception",e.getMessage());}
 
+        if(detection.success){
+
+        }
     }
 }
