@@ -6,6 +6,7 @@ const CameraScraper = require('./scraper_camera')
 const PovpHitrost = require('./povp_hitrost')
 const GostotaPrometa = require('./gostota_prometa')
 const Ceste = require('./ceste')
+const Lokacija = require('./lokacija')
 
 const router = express.Router()
 
@@ -90,13 +91,11 @@ router.get('/api/v1/kamere/:password', async (req, res) => {
     res.send(JSON.stringify(await CameraScraper.scrapeToFile(req, res)))
 })
 
-router.post('/api/v1/ceste', async (req, res) => {
-    Ceste.postSigns(req, res)
-})
-
 // dobi lokacijo iz android appa
 router.post('/api/v1/lokacija', async (req, res) => {
-    console.log("From android app: " + req)
+    Lokacija.save(req, res);
+    
+    res.sendStatus(200);
 })
 
 initScraper();

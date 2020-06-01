@@ -46,4 +46,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     compileOnly 'com.google.android.wearable:wearable:2.6.0'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    // https://mvnrepository.com/artifact/com.github.kevinsawicki/http-request
+    implementation group: 'com.github.kevinsawicki', name: 'http-request', version: '5.3'
 }

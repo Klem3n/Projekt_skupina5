@@ -35,16 +35,22 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.promet.R;
+import com.promet.app.api.PostAPI;
 
 import org.opencv.android.OpenCVLoader;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     //GPS
@@ -302,6 +308,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } catch (Exception e) {
             tv_adress.setText("Nisem našel naslova ");
         }
+
+        try {
+            testPost(location);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //Accelerometer Methods
@@ -352,4 +364,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
+    private void testPost(Location location) throws IOException {
+        Map<String, String> params = new HashMap<>();
+
+        params.put("longitude", String.valueOf(location.getLongitude()));
+        params.put("latitude", String.valueOf(location.getLatitude()));
+        params.put("speed", String.valueOf(location.getSpeed()));
+        params.put("address", geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1).get(0).getAddressLine(0));
+
+        new PostAPI().execute(getPostDataString(params));
+    }
+
+    private String getPostDataString(Map<String, String> params) throws UnsupportedEncodingException {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for(Map.Entry<String, String> entry : params.entrySet()){
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+
+        return result.toString();
+    }
 }

@@ -30,9 +30,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SignDetection {
@@ -68,7 +70,7 @@ public class SignDetection {
         }
     }
 
-    public Mat run(Mat cameraFrame){
+    public Detection run(Mat cameraFrame){
         Mat clone = cameraFrame.clone();
         faceDetector
                 .detectMultiScale(cameraFrame, signDetections, 1.1, 1, 0, new Size(20, 20), new Size());
@@ -76,8 +78,16 @@ public class SignDetection {
         return detectedSigns(clone, cameraFrame, signDetections.toArray());
     }
 
-    public Mat detectedSigns(Mat clone, Mat imageMatrix, Rect[] rects){
+    public Detection detectedSigns(Mat clone, Mat imageMatrix, Rect[] rects){
+        Detection detection = new Detection();
+
+        detection.clone = clone;
+        detection.rects = rects;
+        detection.names = new String[rects.length];
+
+        int count = 0;
         for (Rect rect : rects) {
+
             Mat cropped = new Mat(imageMatrix, rect);
 
             String signName = null;
@@ -97,9 +107,13 @@ public class SignDetection {
 
                 Imgproc.putText(clone, signName, new Point(rect.x, y+10), 5, 2, new Scalar(255, 255, 255));
             }
+
+            detection.names[count] = signName;
+            detection.success = true;
+            count++;
         }
 
-        return clone;
+        return detection;
     }
 
     private String getSign(Mat sign){
@@ -193,5 +207,14 @@ public class SignDetection {
 
             signImages.put(img.substring(0, img.lastIndexOf('.')), mat);
         }
+    }
+
+    public class Detection{
+        public Mat clone;
+
+        public Rect[] rects;
+        public String[] names;
+
+        public boolean success = false;
     }
 }
