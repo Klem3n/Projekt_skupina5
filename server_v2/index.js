@@ -25,7 +25,7 @@ const port = process.env.PORT || 5000
 mongoose.connect(uri, {
     useUnifiedTopology: true
 })
-
+mongoose.set('useFindAndModify', false);
 mongoose.Promise = global.Promise
 var db = mongoose.connection
 db.on('error', console.error.bind(console, 'Mongodb connection error....'))
