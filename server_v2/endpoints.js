@@ -100,7 +100,7 @@ router.post('/api/v1/ceste', async (req, res) => {
 // dobi lokacijo iz android appa
 router.post('/api/v1/lokacija', async (req, res) => {
     //Lokacija.save(req, res);
-    /*
+
     var loc = new LocationModel({
         longitude: req.body.longitude,
         latitude: req.body.latitude,
@@ -108,7 +108,7 @@ router.post('/api/v1/lokacija', async (req, res) => {
         address: req.body.address,
         uuid: req.body.uuid
     })
-    
+    /*
     loc.save((err, location) => {
         if (err) {
             //return res.send(500)
@@ -119,8 +119,11 @@ router.post('/api/v1/lokacija', async (req, res) => {
     })
     */
 
-
-    LocationModel.updateOne({ uuid: req.body.uuid }, { longitude: req.body.longitude, latitude: req.body.latitude, speed: req.body.speed, address: req.body.address, uuid: req.body.uuid })
+    var query = { 'uuid': req.body.uuid }
+    LocationModel.findOneAndUpdate(query, loc, { upsert: true }, (err, doc) => {
+        if (err) return res.send(500);
+        return res.send('Saved')
+    })
 
     res.sendStatus(200);
 })
