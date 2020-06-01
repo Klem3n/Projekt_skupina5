@@ -185,12 +185,12 @@ public class RoadCamera extends AppCompatActivity implements CameraBridgeViewBas
 
         Map<String, String> params = new HashMap<>();
 
-        params.put("uuid", MainActivity.uuid);
+        params.put("uuid", MainActivity.location.getLongitude() + "" + MainActivity.location.getLatitude());
         params.put("longitude", String.valueOf(MainActivity.location.getLongitude()));
         params.put("latitude", String.valueOf(MainActivity.location.getLatitude()));
-        params.put("signs", Arrays.toString(znaki.toArray()));
+        params.put("address", MainActivity.geocoder.getFromLocation(MainActivity.location.getLatitude(), MainActivity.location.getLongitude(), 1).get(0).getAddressLine(0));
+        params.put("name", Arrays.toString(znaki.toArray()));
 
-        new PostAPI().execute("http://192.168.0.28:5000/api/v1/ceste", MainActivity.getPostDataString(params));
-        //HttpRequest.post("http://192.168.0.28:5000/api/v1/ceste").send(MainActivity.getPostDataString(params)).code();
+        new PostAPI().execute("http://192.168.0.28:5000/api/v1/lokacija", MainActivity.getPostDataString(params));
     }
 }

@@ -464,7 +464,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mTimeLeftInMillis = START_TIME_IN_SECONDS*1000;
         counter=0;
         numHoles.clear();
-        tv_condition.setText("Good");
+        if(tv_condition != null){
+            tv_condition.setText("Good");
+        }
     }
 
 }

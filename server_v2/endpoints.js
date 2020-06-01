@@ -106,8 +106,10 @@ router.post('/api/v1/lokacija', async (req, res) => {
         latitude: req.body.latitude,
         speed: req.body.speed,
         address: req.body.address,
-        uuid: req.body.uuid
+        uuid: req.body.uuid,
+        name: req.body.name
     })
+
     /*
     loc.save((err, location) => {
         if (err) {
@@ -121,11 +123,8 @@ router.post('/api/v1/lokacija', async (req, res) => {
 
     var query = { 'uuid': req.body.uuid }
     LocationModel.findOneAndUpdate(query, loc, { upsert: true }, (err, doc) => {
-        if (err) return res.send(500);
         return res.send('Saved')
     })
-
-    res.sendStatus(200);
 })
 
 initScraper();
