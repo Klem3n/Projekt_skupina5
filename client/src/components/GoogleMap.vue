@@ -12,12 +12,15 @@
 
       <gmap-info-window
         v-if="selectedLocation !== null"
-        :position="{ lat: parseFloat(selectedLocation.lat), lng: parseFloat(selectedLocation.lng) }"
+        :position="{ lat: parseFloat(selectedLocation.position.lat), lng: parseFloat(selectedLocation.position.lng) }"
         :opened="infoBoxOpen"
         @closeclick="infoBoxOpen = false;"
       >
         <div class="infoWindow" style="width: 300px;">
-          <h2 id="infoWindow-location">{{ selectedLocation.name }}</h2>
+          <h2 id="infoWindow-location">Device UUID: {{ selectedLocation.title }}</h2>
+          <br>
+          <h2 id="infoWindow-location">Naslov: {{ selectedLocation.address }}</h2>
+          <br>
           <button @click="closeInfoWindow();">Close</button>
         </div>
       </gmap-info-window>
@@ -39,7 +42,8 @@ export default {
       markers: [],
       places: [],
       currentPlace: null,
-      selectedLocation: null
+      selectedLocation: null,
+      infoBoxOpen: false,
     };
   },
 
@@ -55,9 +59,10 @@ export default {
         console.log(response);
         response.data.forEach(entry => {
           this.addMarker(
-            entry.name,
+            entry.uuid,
             parseFloat(entry.latitude),
-            parseFloat(entry.longitude)
+            parseFloat(entry.longitude),
+            entry.address
           );
         });
       });
@@ -65,12 +70,12 @@ export default {
     setPlace(place) {
       this.currentPlace = place;
     },
-    addMarker(name, lat, lng) {
+    addMarker(name, lat, lng, address) {
       const marker = {
         lat: lat,
         lng: lng
       };
-      this.markers.push({ position: marker, title: name });
+      this.markers.push({ position: marker, title: name, address: address });
       this.places.push(this.currentPlace);
       this.center = marker;
       this.currentPlace = null;
@@ -84,7 +89,6 @@ export default {
       });
     },
     openInfoWindow(location) {
-      console.log(location);
       this.selectedLocation = location;
       this.infoBoxOpen = true;
     },
