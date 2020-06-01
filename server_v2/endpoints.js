@@ -96,6 +96,7 @@ router.get('/api/v1/kamere/:password', async (req, res) => {
 // dobi lokacijo iz android appa
 router.post('/api/v1/lokacija', async (req, res) => {
     //Lokacija.save(req, res);
+    /*
     var loc = new LocationModel({
         longitude: req.body.longitude,
         latitude: req.body.latitude,
@@ -103,7 +104,7 @@ router.post('/api/v1/lokacija', async (req, res) => {
         address: req.body.address,
         uuid: req.body.uuid
     })
-
+    
     loc.save((err, location) => {
         if (err) {
             return res.send(500)
@@ -112,6 +113,10 @@ router.post('/api/v1/lokacija', async (req, res) => {
             return res.sendStatus(200)
         }
     })
+    */
+
+
+    LocationModel.updateOne({ uuid: req.body.uuid }, { longitude: req.body.longitude, latitude: req.body.latitude, speed: req.body.speed, address: req.body.address, uuid: req.body.uuid })
 
     res.sendStatus(200);
 })
