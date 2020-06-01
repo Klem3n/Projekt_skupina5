@@ -352,47 +352,4 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-
-
-    public void sendLocation(View view) {
-        if(!tv_longitude.equals("") && !tv_latiency.equals("")){
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            });
-            thread.start();
-        }else{
-            runOnUiThread(()->
-                    Toast.makeText(getApplicationContext(), "Unable to send data!", Toast.LENGTH_SHORT).show());
-        }
-    }
-
-    protected void doInBackground(String... params) {
-        String urlString = params[0]; // URL to call
-        String data = params[1]; //data to post
-        OutputStream out = null;
-
-        try {
-            URL url = new URL("http://192.168.0.28:5000/api/v1/lokacija");
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setReadTimeout(10000);
-            urlConnection.setConnectTimeout(15000);
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setDoInput(true);
-            urlConnection.setDoOutput(true);
-            out = new BufferedOutputStream(urlConnection.getOutputStream());
-
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-            writer.write(data);
-            writer.flush();
-            writer.close();
-            out.close();
-
-            urlConnection.connect();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
 }
