@@ -149,7 +149,7 @@ public class SignDetection {
         Imgproc.calcHist(Collections.singletonList(value), new MatOfInt(0),
                 new Mat(), hist_2, histSize, ranges);
 
-        double histDiff = 1-Imgproc.compareHist(hist_1, hist_2, Imgproc.CV_COMP_CORREL);
+        double histDiff = Imgproc.compareHist(hist_1, hist_2, Imgproc.CV_COMP_CORREL);
 
         Mat template = new Mat();
 
@@ -161,16 +161,12 @@ public class SignDetection {
 
         Imgproc.matchTemplate(graySign, grayValue, template, Imgproc.TM_CCOEFF_NORMED);
 
-        double templateDiff = Core.minMaxLoc(template).maxVal;
-
-        if(templateDiff < 1){
-            templateDiff /= 2;
-        }
+        double templateDiff = 1 + Core.minMaxLoc(template).maxVal;
 
         System.out.println("Hist diff: " + histDiff);
         System.out.println("Template diff: " + templateDiff);
 
-        return Math.abs(histDiff/templateDiff);
+        return histDiff*templateDiff;
     }
 
     private void loadSignImage(RoadCamera camera, String img) {

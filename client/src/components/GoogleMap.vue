@@ -58,8 +58,9 @@ export default {
       axios.get("http://localhost:5000/api/v1/lokacija").then(response => {
         console.log(response);
         response.data.forEach(entry => {
+          var name = entry.name == undefined ? entry.uuid : entry.name;
           this.addMarker(
-            entry.uuid,
+            name,
             parseFloat(entry.latitude),
             parseFloat(entry.longitude),
             entry.address

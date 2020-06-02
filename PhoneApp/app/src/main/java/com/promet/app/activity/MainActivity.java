@@ -250,11 +250,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if(!sharedPreferences.contains("uuid")){
             uuid = UUID.randomUUID().toString().replace("-", "");
             editor.putString("uuid", uuid);
+
+            editor.apply();
         } else {
             uuid = sharedPreferences.getString("uuid", "");
         }
-
-        editor.apply();
     }
 
     //GPS METHODS
