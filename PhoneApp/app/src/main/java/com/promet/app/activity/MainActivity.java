@@ -1,10 +1,5 @@
 package com.promet.app.activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -31,6 +26,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
@@ -49,9 +49,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.TimeUnit;
 import java.util.UUID;
+import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     //GPS
@@ -148,8 +147,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         locationRequest.setFastestInterval(1000 * INTERVAL_FAST_TIMER);
         locationRequest.setPriority(PRIORITY_LOCATION_ACCURACY);
 
-        startTimer();
-
         locationCallBack = new LocationCallback() {
 
             @Override
@@ -231,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         shake = (long) 0.00;
         numHoles = new Vector();
         tv_condition=findViewById(R.id.tv_condition);
+        resetTimer();
 
         //Vibrator
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -272,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void startLocationChanged() {
-        tv_updates.setText("Lokacija se sledi");
+        tv_updates.setText("ON");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -330,13 +328,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (location.hasSpeed()) {
             tv_speed.setText(String.valueOf(location.getSpeed()));
         } else {
-            tv_speed.setText("Ni mogoce");
+            tv_speed.setText("0.0");
         }
 
         if (location.hasAltitude()) {
             tv_altitude.setText(String.valueOf(location.getAltitude()));
         } else {
-            tv_altitude.setText("Ni mogoce");
+            tv_altitude.setText("0.0");
         }
 
         geocoder = new Geocoder(MainActivity.this);
@@ -344,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             tv_adress.setText(addresses.get(0).getAddressLine(0));
         } catch (Exception e) {
-            tv_adress.setText("Nisem našel naslova ");
+            tv_adress.setText("Not found");
         }
     }
 
@@ -404,16 +402,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 numHoles.add(tv_adress);
                 String shakes = String.valueOf(counter) + " shakes";
                 Log.d("NumShakes", shakes);
-                if(numHoles.capacity() == 0) {
-                    tv_condition.setText("Excellent");
-                }
-                else if(numHoles.capacity() < 3) {
-                    tv_condition.setText("Good");
-
-                }
-                else if(numHoles.capacity() >= 3) {
-                    tv_condition.setText("Bad");
-                }
             }
         }
     }
@@ -464,10 +452,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void resetTimer() {
         mTimeLeftInMillis = START_TIME_IN_SECONDS*1000;
         counter=0;
-        numHoles.clear();
-        if(tv_condition != null){
-            tv_condition.setText("Good");
+        if(numHoles.size() < 3) {
+            tv_condition.setText("Excellent");
         }
+        else if(numHoles.size() < 8) {
+            tv_condition.setText("Good");
+
+        }
+        else if(numHoles.size() >= 8) {
+            tv_condition.setText("Bad");
+        }
+        numHoles.clear();
     }
 
 }
