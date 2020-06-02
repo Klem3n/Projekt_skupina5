@@ -7,6 +7,28 @@
     tools:context=".app.activity.MainActivity">
 
     <TextView
+        android:id="@+id/tv_labcondition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="Condition:"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_condition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_labcondition"
+        app:layout_constraintStart_toEndOf="@+id/tv_labcondition"
+        app:layout_constraintTop_toTopOf="@+id/tv_labcondition" />
+
+    <TextView
         android:id="@+id/tv_gyrz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

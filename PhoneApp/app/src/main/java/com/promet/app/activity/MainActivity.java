@@ -396,8 +396,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 Log.d("Y", "Y axis is shuffed");
             } else if (z > 9 || z < -9) {
                 Log.d("Z", "Z axis is shuffed");
+            } else {
+                Log.d("Axis", "In multiple axis is shuffed");
             }
-            if (mTimerRunning && !tv_speed.equals("")) {
+
+            if (mTimerRunning && !tv_speed.equals("")) { //&& !tv_speed.equals("0.0")
                 counter++;
                 numHoles.add(tv_adress);
                 String shakes = String.valueOf(counter) + " shakes";
