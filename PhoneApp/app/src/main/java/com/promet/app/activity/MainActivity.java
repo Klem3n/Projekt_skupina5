@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             Log.d("Curr", String.valueOf(currAcc));
             Log.d("Time", String.valueOf(elapsedTimeInSecond));
             Toast.makeText(this, "Device was shuffed", Toast.LENGTH_SHORT).show();
-            vibrator.vibrate(VibrationEffect.createOneShot((long) (Vibrator_Time_Seconds*10000), DEFAULT_AMPLITUDE));
+            vibrator.vibrate(VibrationEffect.createOneShot((long) (Vibrator_Time_Seconds*1000), DEFAULT_AMPLITUDE));
 
             if (x > 9 || x < -9) {
                 Log.d("X", "X axis is shuffed");
