@@ -5,7 +5,7 @@ navodila za zagon spletne aplikacije:
 Server
 1. cd server_v2
 1. npm install
-2. npm run dev
+2. node index.js
 
 Client
 1. cd client
