@@ -11,6 +11,7 @@ const Lokacija = require('./lokacija')
 const router = express.Router()
 
 const LocationModel = require('./models/locationModel.js')
+const RadarModel = require('./models/radarModel')
 
 var data = null;
 var lastScrape = new Date(null);
@@ -125,6 +126,18 @@ router.post('/api/v1/lokacija', async (req, res) => {
     LocationModel.findOneAndUpdate(query, loc, { upsert: true }, (err, doc) => {
         return res.send('Saved')
     })
+})
+
+router.post('/api/v1/radarReport', async (req, res) => {
+    var rad = new RadarModel({
+        longitude: req.body.longitude,
+        latitude: req.body.latitude,
+        address: req.body.address,
+        uuid: req.body.uuid
+    })
+
+    console.log("Recieved radar report")
+    console.log(req.body)
 })
 
 router.get('/api/v1/lokacija', async (req, res) => {
