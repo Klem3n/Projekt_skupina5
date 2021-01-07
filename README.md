@@ -9,7 +9,7 @@ Server
 
 Expose server using localtunnel.me (server must already be running on localhost)
 1. npm install -g localtunnel
-2. lt --port <PORT> --subdomain skupina5
+2. lt --port "yourPortNumber" --subdomain skupina5
 
 Client
 1. cd client
