@@ -287,5 +287,8 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
+# iOS
+**/Pods
+
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties.DS_Store
