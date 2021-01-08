@@ -200,32 +200,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             var placeMark: CLPlacemark!
             placeMark = placemarks?[0]
             
-            // Location name
-            if let locationName = placeMark.location {
-                print(locationName)
-            }
-            // Street address
-            if let street = placeMark.thoroughfare {
-                print(street)
-            }
-            // City
-            if let city = placeMark.locality {
-                print(city)
-            }
-            // State
-            if let state = placeMark.administrativeArea {
-                print(state)
-            }
-            // Zip code
-            if let zipCode = placeMark.postalCode {
-                print(zipCode)
-            }
-            // Country
-            if let country = placeMark.country {
-                print(country)
-            }
-            
-            print(placeMark.country!)
             let s1 = placeMark.thoroughfare! + " "
             let s2 = s1 + placeMark.postalCode! + " "
             let s3 = s2 + placeMark.locality! + " "
@@ -239,7 +213,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 "address": addr,
                 "uuid": UIDevice.current.identifierForVendor!.uuidString
             ]
-            //print(body)
             let bodyData = try? JSONSerialization.data(
                 withJSONObject: body,
                 options: []
@@ -253,8 +226,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 
                 if let error = error {
                     // Handle HTTP request error
+                    print(error)
                 } else if let data = data {
                     // Handle HTTP request response
+                    print(data)
                 } else {
                     // Handle unexpected error
                 }
