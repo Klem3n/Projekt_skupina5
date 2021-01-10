@@ -11,6 +11,7 @@ import MapKit
 import SceneKit
 import UIKit
 import CoreLocation
+import Alamofire
 
 class ARViewController: UIViewController {
     
@@ -22,6 +23,9 @@ class ARViewController: UIViewController {
         print("did load ar view")
         sceneLocationView.run()
         view.addSubview(sceneLocationView)
+        
+        // fetch current radar reports from server
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {

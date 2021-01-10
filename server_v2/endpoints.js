@@ -157,7 +157,12 @@ router.get('/api/v1/fetch_all_radar', async (req, res) => {
 
     console.log("fetching all radarji")
 
-    
+    RadarModel.find().sort({
+        _id: -1
+    }).exec((err, docs) => {
+        //console.log(docs)
+        res.send(JSON.stringify(docs))
+    })
 
 })
 

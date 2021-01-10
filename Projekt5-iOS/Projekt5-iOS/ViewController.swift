@@ -210,7 +210,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 "longitude": self.currentLon.description,
                 "latitude": self.currentLat.description,
                 "address": addr,
-                "uuid": UIDevice.current.identifierForVendor!.uuidString
+                "uuid": UUID().uuidString
             ]
             
             AF.request("http://192.168.1.127:5000/api/v1/report_radar", method: .post, parameters: parameters).validate()
