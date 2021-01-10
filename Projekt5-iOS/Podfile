@@ -7,5 +7,6 @@ target 'Projekt5-iOS' do
 
   # Pods for Projekt5-iOS
 	pod 'ARCL'
+	pod 'Alamofire', '~> 5.2'
 
 end

@@ -6,8 +6,9 @@
 //
 
 import UIKit
-import CoreLocation
 import ARCL
+import Alamofire
+import CoreLocation
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
@@ -205,45 +206,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             let s3 = s2 + placeMark.locality! + " "
             let addr = s3 + placeMark.country!
                 
-            let url = URL(string: "https://skupina5.loca.lt/api/v1/radarReport")!
-            var request = URLRequest(url: url)
-            let body = [
+            let parameters: Parameters = [
                 "longitude": self.currentLon.description,
                 "latitude": self.currentLat.description,
                 "address": addr,
                 "uuid": UIDevice.current.identifierForVendor!.uuidString
             ]
-            let bodyData = try? JSONSerialization.data(
-                withJSONObject: body,
-                options: []
-            )
-            // Change the URLRequest to a POST request
-            request.httpMethod = "POST"
-            request.httpBody = bodyData
-            request.setValue("application/json", forHTTPHeaderField: "Accept")
-            let session = URLSession.shared
-            let task = session.dataTask(with: request) { (data, response, error) in
-
-                if let error = error {
-                    // Handle HTTP request error
-                    print(error)
-                } else if let data = data {
-                    // Handle HTTP request response
-                    print(data)
-                } else {
-                    // Handle unexpected error
-                }
-            }
-            task.resume()
             
+            AF.request("http://192.168.1.127:5000/api/v1/report_radar", method: .post, parameters: parameters).validate()
+            .responseJSON { response in
+                print("JSON Response")
+            }
+
         })
     }
     
     @IBAction func goToARView(_ sender: Any) {
         performSegue(withIdentifier: "arViewSegue", sender: sender)
     }
-    
-    
+
 }
 
 

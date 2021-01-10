@@ -128,16 +128,37 @@ router.post('/api/v1/lokacija', async (req, res) => {
     })
 })
 
-router.post('/api/v1/radarReport', async (req, res) => {
+router.post('/api/v1/report_radar', async (req, res) => {
+    
+
+    console.log("recieved radar report")
+
+    const obj = JSON.parse(JSON.stringify(req.body));
+
+    //console.log(obj.longitude);
+    //console.log(obj.uuid)
+
     var rad = new RadarModel({
-        longitude: req.body.longitude,
-        latitude: req.body.latitude,
-        address: req.body.address,
-        uuid: req.body.uuid
+        longitude: obj.longitude,
+        latitude: obj.latitude,
+        address: obj.address,
+        uuid: obj.uuid
     })
 
-    console.log("Recieved radar report")
-    console.log(req.body)
+
+    var query = { 'uuid': obj.uuid }
+    RadarModel.findOneAndUpdate(query, rad, { upsert: true }, (err, doc) => {
+        return res.send('Saved')
+    })
+    
+})
+
+router.get('/api/v1/fetch_all_radar', async (req, res) => {
+
+    console.log("fetching all radarji")
+
+    
+
 })
 
 router.get('/api/v1/lokacija', async (req, res) => {

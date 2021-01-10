@@ -8,5 +8,5 @@ var radarSchema = new Schema({
     uuid: String,
 })
 
-var RadarModel = mongoose.model('radarji', radarSchema)
+var RadarModel = mongoose.model('radar_locations', radarSchema)
 module.exports = RadarModel

@@ -1,16 +1,20 @@
 PODS:
+  - Alamofire (5.4.1)
   - ARCL (1.3.0)
 
 DEPENDENCIES:
+  - Alamofire (~> 5.2)
   - ARCL
 
 SPEC REPOS:
   trunk:
+    - Alamofire
     - ARCL
 
 SPEC CHECKSUMS:
+  Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
   ARCL: db48b6927d6f3f49f29568295ed91c94ab8d4aab
 
-PODFILE CHECKSUM: dfbdc5c634d1bcc7fd31a3fd853303b021bed654
+PODFILE CHECKSUM: ad3c95c76ea535f58a90febaa7da5b41e09732c1
 
 COCOAPODS: 1.10.0
