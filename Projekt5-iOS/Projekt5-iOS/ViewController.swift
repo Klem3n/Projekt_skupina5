@@ -33,13 +33,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
-        locationManager = CLLocationManager()
-        locationManager?.delegate = self
-        locationManager?.requestAlwaysAuthorization()
-        locationManager?.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager?.startUpdatingLocation()
-        
+    
         self.kameraButton.applyGradient(colors: [Helpers.UIColorFromRGB(0x2B95CE).cgColor, Helpers.UIColorFromRGB(0x2ECAD5).cgColor])
         self.kameraButton.contentEdgeInsets = UIEdgeInsets(top: 10,left: 10,bottom: 10,right: 10)
         
@@ -48,26 +42,48 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
         self.startArButton.applyGradient(colors: [Helpers.UIColorFromRGB(0x2B95CE).cgColor, Helpers.UIColorFromRGB(0x2ECAD5).cgColor])
         self.startArButton.contentEdgeInsets = UIEdgeInsets(top: 10,left: 10,bottom: 10,right: 10)
-
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.locationManager?.delegate = self
+        appDelegate.locationManager?.startUpdatingLocation()
+        self.setupGeofencing()
+        
     }
     
     override func becomeFirstResponder() -> Bool {
         return true
     }
     
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedAlways {
-            if CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self) {
-                if CLLocationManager.isRangingAvailable() {
-                    print("user allowed location - ranging available")
-                }
-            }
+    
+    func setupGeofencing() {
+        print("setup geofencing")
+        
+        // mexico
+        let geofenceRegionCenter1 = CLLocationCoordinate2DMake(19.4354778, -99.1364789)
+        // japan
+        let geofenceRegionCenter2 = CLLocationCoordinate2DMake(35.7020691, 139.7753269)
+        
+        var arrayOfRegions = [CLLocationCoordinate2D]()
+        arrayOfRegions.append(geofenceRegionCenter1)
+        arrayOfRegions.append(geofenceRegionCenter2)
+        
+        for region in arrayOfRegions {
+            let geofenceRegion = CLCircularRegion(center: region, radius: 250, identifier: UUID().uuidString)
+            
+            geofenceRegion.notifyOnEntry = true
+            geofenceRegion.notifyOnExit = true
+            
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            appDelegate.locationManager?.delegate = self
+            appDelegate.locationManager?.startUpdatingLocation()
+            appDelegate.locationManager?.startMonitoring(for: geofenceRegion)
         }
+        
     }
     
     func locationManager(_ manager: CLLocationManager,
                          didUpdateLocations locations: [CLLocation]) {
-        
+                
         guard let speed = manager.location?.speed else { return }
         if speed < 1 {
             DispatchQueue.main.async {
@@ -184,13 +200,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         self.present(alert, animated: true, completion: nil)
     }
     
-    
-    let simpleClosure:(String) -> (String) = { name in
-        
-        let greeting = "Hello, World! " + "Program"
-        return greeting
-    }
-    
     func convertLatLongToAddress(latitude:Double,longitude:Double) {
         
         let geoCoder = CLGeocoder()
@@ -224,7 +233,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBAction func goToARView(_ sender: Any) {
         performSegue(withIdentifier: "arViewSegue", sender: sender)
     }
-
+    
 }
 
 
