@@ -19,6 +19,7 @@ class ARViewController: UIViewController, CLLocationManagerDelegate, UNUserNotif
     var sceneLocationView = SceneLocationView()
     var allAnnotationNodes = [LocationAnnotationNode]()
     var notificationCenter: UNUserNotificationCenter?
+    var globalFetchedData = JSON()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +28,7 @@ class ARViewController: UIViewController, CLLocationManagerDelegate, UNUserNotif
         
         makeNetworkRequest() { (jsonResult) -> () in
             print("network request callback here")
+            self.globalFetchedData = jsonResult
             self.setupAnnotationNodes(fetchedData: jsonResult)
             self.sceneLocationView.run()
             self.view.addSubview(self.sceneLocationView)
@@ -82,16 +84,25 @@ class ARViewController: UIViewController, CLLocationManagerDelegate, UNUserNotif
     func setupGeofencing() {
         print("setup geofencing")
         
-        let geofenceRegionCenter = CLLocationCoordinate2DMake(46.535370, 15.664380)
-        let geofenceRegion = CLCircularRegion(center: geofenceRegionCenter, radius: 250, identifier: "UniqueIdentifier")
         
-        geofenceRegion.notifyOnEntry = true
-        geofenceRegion.notifyOnExit = true
-        
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.locationManager?.delegate = self
-        appDelegate.locationManager?.startUpdatingLocation()
-        appDelegate.locationManager?.startMonitoring(for: geofenceRegion)
+        for element in globalFetchedData {
+            
+            let lat = element.1["latitude"].doubleValue
+            let lon = element.1["longitude"].doubleValue
+            
+            let geofenceRegionCenter = CLLocationCoordinate2DMake(lat, lon)
+            
+            let geofenceRegion = CLCircularRegion(center: geofenceRegionCenter, radius: 250, identifier: UUID().uuidString)
+
+            geofenceRegion.notifyOnEntry = true
+            geofenceRegion.notifyOnExit = true
+            
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            appDelegate.locationManager?.delegate = self
+            appDelegate.locationManager?.startUpdatingLocation()
+            appDelegate.locationManager?.startMonitoring(for: geofenceRegion)
+            
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
