@@ -1,7 +1,5 @@
 const express = require('express')
-
-const Scraper = require('./scraper')
-const CameraScraper = require('./scraper_camera')
+const request = require('request');
 
 const PovpHitrost = require('./povp_hitrost')
 const GostotaPrometa = require('./gostota_prometa')
@@ -13,29 +11,39 @@ const router = express.Router()
 const LocationModel = require('./models/locationModel.js')
 const RadarModel = require('./models/radarModel')
 
-var data = null;
-var lastScrape = new Date(null);
+// vrne JSON objekt trenutnih live radarskih slik in imena cest / predorov
+router.get('/api/v1/kamere', async (req, res) => {
+    requestData("kamere", function(response) {
+        res.send(response)
+    })
+})
 
 // Vrne vse podatke iz promet.si tabele
 router.get('/api/v1/all', async (req, res) => {
-    data = await Scraper.runScraper();
-
-    res.send(JSON.stringify(data));
+    requestData("ceste", function(response) {
+        res.send(response)
+    })
 })
 
 // vrne seznam cest
 router.get('/api/v1/ceste', async (req, res) => {
-    data = await Scraper.runScraper();
-
-    res.send(JSON.stringify(Ceste.run(req, data)));
+    requestData("ceste", function(response) {
+        var data = JSON.parse(response);
+        
+        if(data != null)
+            res.send(JSON.stringify(Ceste.run(req, data)))
+    })
 })
 
 // vrne povprecno hitrost na vsaki izmed cest
 router.get('/api/v1/povprecna_hitrost', async (req, res) => {
-    data = await Scraper.runScraper();
-
     try {
-        res.send(JSON.stringify(PovpHitrost.run(req, data)));
+        requestData("ceste", function(response) {
+            var data = JSON.parse(response);
+            
+            if(data != null)
+                res.send(JSON.stringify(PovpHitrost.run(req, data)))
+        })
     } catch (err) {
         res.send(JSON.stringify("Error: " + err));
     }
@@ -43,10 +51,13 @@ router.get('/api/v1/povprecna_hitrost', async (req, res) => {
 
 // vrne povprecno hitrost za podano cesto
 router.get('/api/v1/povprecna_hitrost/:road', async (req, res) => {
-    data = await Scraper.runScraper();
-
     try {
-        res.send(JSON.stringify(PovpHitrost.run(req, data)));
+        requestData("ceste", function(response) {
+            var data = JSON.parse(response);
+            
+            if(data != null)
+                res.send(JSON.stringify(PovpHitrost.run(req, data)))
+        })
     } catch (err) {
         res.send(JSON.stringify("Error: " + err));
     }
@@ -54,10 +65,13 @@ router.get('/api/v1/povprecna_hitrost/:road', async (req, res) => {
 
 // vrne par cesta : gostota
 router.get('/api/v1/gostota', async (req, res) => {
-    data = await Scraper.runScraper();
-
     try {
-        res.send(JSON.stringify(GostotaPrometa.run(req, data)));
+        requestData("ceste", function(response) {
+            var data = JSON.parse(response);
+            
+            if(data != null)
+                res.send(JSON.stringify(GostotaPrometa.run(req, data)))
+        })
     } catch (err) {
         res.send(JSON.stringify("Error: " + err));
     }
@@ -65,10 +79,13 @@ router.get('/api/v1/gostota', async (req, res) => {
 
 // vrne trenutno gostoto prometa na podani cesti kot parameter :density
 router.get('/api/v1/gostota/:density', async (req, res) => {
-    data = await Scraper.runScraper();
-
     try {
-        res.send(JSON.stringify(GostotaPrometa.run(req, data)));
+        requestData("ceste", function(response) {
+            var data = JSON.parse(response);
+            
+            if(data != null)
+                res.send(JSON.stringify(GostotaPrometa.run(req, data)))
+        })
     } catch (err) {
         res.send(JSON.stringify("Error: " + err));
     }
@@ -76,22 +93,16 @@ router.get('/api/v1/gostota/:density', async (req, res) => {
 
 // vrne podatno gostoto :density na podani cesti :road
 router.get('/api/v1/gostota/:density/:road', async (req, res) => {
-    data = await Scraper.runScraper();
-
     try {
-        res.send(JSON.stringify(GostotaPrometa.run(req, data)));
+        requestData("ceste", function(response) {
+            var data = JSON.parse(response);
+            
+            if(data != null)
+                res.send(JSON.stringify(GostotaPrometa.run(req, data)))
+        })
     } catch (err) {
         res.send(JSON.stringify("Error: " + err));
     }
-})
-
-// vrne JSON objekt trenutnih live radarskih slik in imena cest / predorov
-router.get('/api/v1/kamere', async (req, res) => {
-    res.send(JSON.stringify(await CameraScraper.getCameras()))
-})
-
-router.get('/api/v1/kamere/:password', async (req, res) => {
-    res.send(JSON.stringify(await CameraScraper.scrapeToFile(req, res)))
 })
 
 router.post('/api/v1/ceste', async (req, res) => {
@@ -175,10 +186,22 @@ router.get('/api/v1/lokacija', async (req, res) => {
     })
 })
 
-initScraper();
-
-async function initScraper() {
-    data = await Scraper.runScraper();
-}
-
 module.exports = router
+
+var requestIndex = 0;
+
+var scrapers = [
+    "http://localhost:4999/",
+    "http://192.168.0.27:4999/"
+]
+
+function requestData(endpoint, callback){
+    console.log("Requesting", scrapers[requestIndex%scrapers.length] + endpoint)
+    request(scrapers[requestIndex++%scrapers.length] + endpoint, function (error, response, html) {
+        if (!error && response.statusCode == 200) {
+            callback(html)
+        } else {
+            callback(error)
+        }
+    });
+}
