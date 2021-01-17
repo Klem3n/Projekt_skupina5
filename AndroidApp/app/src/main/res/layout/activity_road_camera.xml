@@ -16,14 +16,13 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/ic_blur_circular_black_24dp"
-        android:backgroundTint="#ffffff"/>
+        android:backgroundTint="#ffffff" />
 
     <ImageView
         android:id="@+id/snap_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
-        />
+        android:visibility="invisible" />
 </RelativeLayout>

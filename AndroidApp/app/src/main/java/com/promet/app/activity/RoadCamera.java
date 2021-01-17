@@ -117,7 +117,7 @@ public class RoadCamera extends AppCompatActivity implements CameraBridgeViewBas
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         cameraView = inputFrame.rgba();
 
-        Imgproc.cvtColor(cameraView, cameraView, Imgproc.COLOR_RGBA2BGRA);
+        //Imgproc.cvtColor(cameraView, cameraView, Imgproc.COLOR_RGBA2RGB);
 
         //cameraViewT = cameraView.t();
         //Core.flip(cameraView.t(), cameraViewT, 1);
