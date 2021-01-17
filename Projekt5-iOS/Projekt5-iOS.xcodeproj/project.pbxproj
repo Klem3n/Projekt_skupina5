@@ -15,8 +15,10 @@
 		644AC6FB25A62356009154E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 644AC6FA25A62356009154E7 /* Assets.xcassets */; };
 		644AC6FE25A62356009154E7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 644AC6FC25A62356009154E7 /* LaunchScreen.storyboard */; };
 		644AC70725A650DA009154E7 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AC70625A650DA009154E7 /* Helpers.swift */; };
-		644AC70B25A65B3F009154E7 /* Model.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 644AC70A25A65B3F009154E7 /* Model.mlmodel */; };
+		644AC70B25A65B3F009154E7 /* MLSigns.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 644AC70A25A65B3F009154E7 /* MLSigns.mlmodel */; };
 		64E5810D25A674EB00157BA5 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E5810C25A674EB00157BA5 /* ARViewController.swift */; };
+		64EE3FE125B35EA3000AB551 /* ZnakRecognitionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EE3FE025B35EA3000AB551 /* ZnakRecognitionViewController.swift */; };
+		64EF26E225B3DE6800431D95 /* CameraConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EF26E125B3DE6800431D95 /* CameraConfig.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,8 +31,10 @@
 		644AC6FD25A62356009154E7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		644AC6FF25A62356009154E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		644AC70625A650DA009154E7 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
-		644AC70A25A65B3F009154E7 /* Model.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Model.mlmodel; sourceTree = "<group>"; };
+		644AC70A25A65B3F009154E7 /* MLSigns.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MLSigns.mlmodel; sourceTree = "<group>"; };
 		64E5810C25A674EB00157BA5 /* ARViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewController.swift; sourceTree = "<group>"; };
+		64EE3FE025B35EA3000AB551 /* ZnakRecognitionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZnakRecognitionViewController.swift; sourceTree = "<group>"; };
+		64EF26E125B3DE6800431D95 /* CameraConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraConfig.swift; sourceTree = "<group>"; };
 		8907A3542CCACB3F34E5B8E2 /* Pods_Projekt5_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Projekt5_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C1D45324F32A31809A10C4F /* Pods-Projekt5-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Projekt5-iOS.debug.xcconfig"; path = "Target Support Files/Pods-Projekt5-iOS/Pods-Projekt5-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		A3C3D8C3B10BDAAF75F2BC4B /* Pods-Projekt5-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Projekt5-iOS.release.xcconfig"; path = "Target Support Files/Pods-Projekt5-iOS/Pods-Projekt5-iOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -69,11 +73,13 @@
 		644AC6F025A62352009154E7 /* Projekt5-iOS */ = {
 			isa = PBXGroup;
 			children = (
-				644AC70A25A65B3F009154E7 /* Model.mlmodel */,
+				644AC70A25A65B3F009154E7 /* MLSigns.mlmodel */,
 				644AC6F125A62352009154E7 /* AppDelegate.swift */,
 				644AC6F325A62352009154E7 /* SceneDelegate.swift */,
 				644AC6F525A62352009154E7 /* ViewController.swift */,
+				64EE3FE025B35EA3000AB551 /* ZnakRecognitionViewController.swift */,
 				64E5810C25A674EB00157BA5 /* ARViewController.swift */,
+				64EF26E125B3DE6800431D95 /* CameraConfig.swift */,
 				644AC70625A650DA009154E7 /* Helpers.swift */,
 				644AC6F725A62352009154E7 /* Main.storyboard */,
 				644AC6FA25A62356009154E7 /* Assets.xcassets */,
@@ -215,9 +221,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				644AC6F625A62352009154E7 /* ViewController.swift in Sources */,
-				644AC70B25A65B3F009154E7 /* Model.mlmodel in Sources */,
+				644AC70B25A65B3F009154E7 /* MLSigns.mlmodel in Sources */,
 				644AC6F225A62352009154E7 /* AppDelegate.swift in Sources */,
 				64E5810D25A674EB00157BA5 /* ARViewController.swift in Sources */,
+				64EF26E225B3DE6800431D95 /* CameraConfig.swift in Sources */,
+				64EE3FE125B35EA3000AB551 /* ZnakRecognitionViewController.swift in Sources */,
 				644AC6F425A62352009154E7 /* SceneDelegate.swift in Sources */,
 				644AC70725A650DA009154E7 /* Helpers.swift in Sources */,
 			);

@@ -98,6 +98,10 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <state key="normal" title="Razpoznava znakov 🛣"/>
+                                <connections>
+                                    <action selector="goToRazpoznavaZnakovView:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mIN-mR-U8X"/>
+                                    <segue destination="bxa-Bf-zHJ" kind="show" identifier="znakRecognitionSegue" id="THe-pq-RzG"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zyi-XZ-V68">
                                 <rect key="frame" x="16" y="603" width="343" height="50"/>
@@ -143,7 +147,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="34.399999999999999" y="79.802955665024641"/>
+            <point key="canvasLocation" x="-318" y="468"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="wGk-yx-zer">
@@ -160,6 +164,32 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5v0-E2-z9J" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="943" y="80"/>
+        </scene>
+        <!--Znak Recognition View Controller-->
+        <scene sceneID="rRA-9v-bar">
+            <objects>
+                <viewController id="bxa-Bf-zHJ" customClass="ZnakRecognitionViewController" customModule="Projekt5_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="p0U-ZW-TKa">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="758"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SmX-3a-xBU" userLabel="Preview View">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="758"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="iVB-81-cdF"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="mc2-zP-94n"/>
+                    <connections>
+                        <outlet property="previewView" destination="SmX-3a-xBU" id="A6y-SG-UpD"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dW9-yh-46C" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="941.60000000000002" y="826.84729064039414"/>
         </scene>
     </scenes>
     <resources>

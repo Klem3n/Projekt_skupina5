@@ -234,6 +234,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         performSegue(withIdentifier: "arViewSegue", sender: sender)
     }
     
+    @IBAction func goToRazpoznavaZnakovView(_ sender: Any) {
+        print("razpoznava segue triggered")
+        //performSegue(withIdentifier: "znakRecognitionSegue", sender: sender)
+    }
+    
 }
 
 
